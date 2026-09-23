@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: platform-services-tls
   dnsNames:
-  - headlamp.yhzone.top
+  - '*.k8s.yhzone.top'
   - harbor.yhzone.top
   issuerRef:
     name: letsencrypt-cloudflare

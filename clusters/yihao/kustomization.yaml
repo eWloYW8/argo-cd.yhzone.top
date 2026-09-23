@@ -10,3 +10,5 @@ resources:
 - harbor-support.yaml
 - harbor.yaml
 - ../../platform/headlamp-access
+- harbor-cache.yaml
+- caddy-internal.yaml

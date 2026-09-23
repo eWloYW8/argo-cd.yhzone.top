@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: harbor-configure-cache
+  namespace: harbor
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      automountServiceAccountToken: false
+      containers:
+      - name: configure
+        image: python:3.13.12-alpine
+        command:
+        - python
+        - /scripts/configure-cache.py
+        env:
+        - name: HARBOR_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: harbor-bootstrap
+              key: HARBOR_ADMIN_PASSWORD
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+          readOnly: true
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+      volumes:
+      - name: scripts
+        configMap:
+          name: harbor-cache-scripts

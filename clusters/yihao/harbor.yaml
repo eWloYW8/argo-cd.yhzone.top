@@ -16,7 +16,7 @@ spec:
           type: clusterIP
           tls:
             enabled: false
-        externalURL: https://harbor.yhzone.top:20443
+        externalURL: https://harbor.yhzone.top
         existingSecretAdminPassword: harbor-bootstrap
         existingSecretSecretKey: harbor-bootstrap
         core:

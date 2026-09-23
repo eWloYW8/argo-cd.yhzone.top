@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy-internal
+  namespace: platform-certificates
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels: &id001
+      app: caddy-internal
+  template:
+    metadata:
+      labels: *id001
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/hostname: yihao-pve-debian
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: caddy
+        image: caddy:2.11.4-alpine
+        command:
+        - /bin/sh
+        - /etc/caddy/run.sh
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        ports:
+        - name: https
+          containerPort: 443
+          protocol: TCP
+        readinessProbe:
+          tcpSocket:
+            host: 10.1.2.4
+            port: 443
+          initialDelaySeconds: 3
+        livenessProbe:
+          tcpSocket:
+            host: 10.1.2.4
+            port: 443
+          initialDelaySeconds: 20
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/caddy
+          readOnly: true
+        - name: certs
+          mountPath: /certs
+          readOnly: true
+        - name: runtime
+          mountPath: /run/caddy
+        - name: data
+          mountPath: /data
+        - name: caddy-config
+          mountPath: /config
+      volumes:
+      - name: config
+        configMap:
+          name: caddy-internal
+      - name: certs
+        secret:
+          secretName: platform-services-tls
+          defaultMode: 288
+      - name: runtime
+        emptyDir: {}
+      - name: data
+        emptyDir: {}
+      - name: caddy-config
+        emptyDir: {}
