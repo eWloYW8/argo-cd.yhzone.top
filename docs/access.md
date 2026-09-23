@@ -52,3 +52,9 @@ docker pull harbor.yhzone.top/dockerhub/library/busybox:1.37.0
 ## 凭据恢复
 
 Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 bootstrap/import-cloudflare.py` 导入；不进入 Git。Harbor 初始化随机密钥、数据库密码和 token 签名证书保存在 `harbor-bootstrap`、`harbor-token-signing` 两个 Secret。备份必须包含这些 Secret 与数据库/镜像数据，避免单独恢复 PVC 后生成新密码。Git 仓库不包含这些凭据。
+
+全新环境首次部署 Harbor 前，创建 harbor namespace 并运行 `python3 bootstrap/seed-harbor-secrets.py`（依赖 python3-bcrypt 和 OpenSSL）。RSA 签名私钥使用 Harbor 所需的 PKCS#1 格式；已有 PVC 时必须恢复原始凭据。
+
+## 验证记录（2026-09-23）
+
+所有 Argo CD 应用 Synced / Healthy；三个 HTTPS 地址通过系统 CA 校验。Harbor 登录及 `dockerhub/library/busybox:1.37.0` 实际拉取成功，registry API 确认缓存 artifact 已存在。Caddy 强制热加载已验证。首张证书到期时间为 2026-12-22，cert-manager 计划于 2026-11-22 续期。
