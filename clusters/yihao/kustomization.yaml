@@ -5,3 +5,8 @@ resources:
 - argocd.yaml
 - ../../platform/project
 - cert-manager.yaml
+- certificates.yaml
+- headlamp.yaml
+- harbor-support.yaml
+- harbor.yaml
+- ../../platform/headlamp-access

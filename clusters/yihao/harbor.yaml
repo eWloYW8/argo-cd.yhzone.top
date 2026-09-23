@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+spec:
+  project: yihao
+  source:
+    repoURL: https://helm.goharbor.io
+    chart: harbor
+    targetRevision: 1.19.2
+    helm:
+      releaseName: harbor
+      valuesObject:
+        expose:
+          type: clusterIP
+          tls:
+            enabled: false
+        externalURL: https://harbor.yhzone.top:20443
+        existingSecretAdminPassword: harbor-bootstrap
+        existingSecretSecretKey: harbor-bootstrap
+        core:
+          existingSecret: harbor-bootstrap
+          existingXsrfSecret: harbor-bootstrap
+          secretName: harbor-token-signing
+        jobservice:
+          existingSecret: harbor-bootstrap
+        registry:
+          existingSecret: harbor-bootstrap
+          credentials:
+            existingSecret: harbor-bootstrap
+        database:
+          type: external
+          external:
+            host: harbor-postgresql
+            port: '5432'
+            username: postgres
+            coreDatabase: registry
+            existingSecret: harbor-bootstrap
+            sslmode: disable
+        trivy:
+          enabled: false
+        persistence:
+          enabled: true
+          resourcePolicy: keep
+          persistentVolumeClaim:
+            registry:
+              storageClass: yihao-local
+              size: 30Gi
+            jobservice:
+              jobLog:
+                storageClass: yihao-local
+                size: 1Gi
+            redis:
+              storageClass: yihao-local
+              size: 1Gi
+        updateStrategy:
+          type: Recreate
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: harbor
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m

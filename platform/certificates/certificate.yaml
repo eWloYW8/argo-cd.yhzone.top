@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: platform-services
+  namespace: platform-certificates
+spec:
+  secretName: platform-services-tls
+  dnsNames:
+  - headlamp.yhzone.top
+  - harbor.yhzone.top
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
