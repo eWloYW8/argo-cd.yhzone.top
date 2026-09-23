@@ -1,0 +1,22 @@
+# First server only. Worker/server join configuration must use its own EasyTier IP.
+node-name: yihao-pve-debian
+node-ip: 10.1.2.4
+advertise-address: 10.1.2.4
+flannel-iface: tun0
+flannel-backend: vxlan
+cluster-init: true
+cluster-cidr: 10.42.0.0/16
+service-cidr: 10.43.0.0/16
+tls-san:
+  - 10.1.2.4
+  - yihao-pve-debian
+write-kubeconfig-mode: "0600"
+default-local-storage-path: /home/yihao/k8s/storage/pvc
+etcd-snapshot-dir: /home/yihao/k8s/storage/etcd-snapshots
+secrets-encryption: true
+disable:
+  - traefik
+  - servicelb
+  - local-storage
+kubelet-arg:
+  - fail-swap-on=false

@@ -1,0 +1,7 @@
+*.kubeconfig
+.env
+.env.*
+*.key
+*.token
+secrets/
+!secrets/README.md
