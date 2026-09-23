@@ -13,6 +13,10 @@ sudo install -m 0600 bootstrap/k3s/config.yaml /etc/rancher/k3s/config.yaml
 sudo install -m 0644 bootstrap/k3s/easytier.conf /etc/systemd/system/k3s.service.d/easytier.conf
 sudo install -m 0644 bootstrap/k3s/lxc-kmsg.conf /etc/tmpfiles.d/yihao-k3s-kmsg.conf
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/yihao-k3s-kmsg.conf
+if systemctl is-active --quiet NetworkManager; then
+  sudo install -m 0644 bootstrap/k3s/networkmanager.conf /etc/NetworkManager/conf.d/90-yihao-k3s.conf
+  sudo nmcli general reload conf
+fi
 sudo systemctl daemon-reload
 sudo systemctl start k3s
 k=(kubectl --context yihao)

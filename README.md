@@ -56,3 +56,5 @@ GitHub 地址确定并推送后再创建根 Application。私有仓库凭据只�
 私有仓库：https://github.com/eWloYW8/argo-cd.yhzone.top 。根 Application 部署 `clusters/yihao`，其中含独立的 Argo CD 自管理 Application。默认存储只允许首节点，新增节点不会自动承载持久卷。
 
 Argo CD 与本机 git origin 均使用 HTTPS。轮换只读 token：运行 `python3 bootstrap/configure-repository.py`。
+
+NetworkManager 通过 `bootstrap/k3s/networkmanager.conf` 排除 CNI 与 Flannel 接口，防止自动 DHCP 接管并拆离 Pod veth。配置安装在 `/etc/NetworkManager/conf.d/90-yihao-k3s.conf`。
