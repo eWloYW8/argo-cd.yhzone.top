@@ -49,8 +49,8 @@ GitHub 地址确定并推送后再创建根 Application。私有仓库凭据只�
 1. 在 PVE 宿主机审阅并应用 `bootstrap/pve-sysctl.conf` 中的三个参数，将其持久化到 `/etc/sysctl.d/`。这些参数影响宿主机及其他容器。
 2. 本机执行 `./bootstrap/resume.sh` 完成节点、存储 provisioner、Argo CD 安装。
 3. 本机 `gh auth login -h github.com` 恢复 GitHub 登录。
-4. 执行 `./bootstrap/connect-github.sh` 推送 main、添加仓库只读部署密钥并连接 GitOps。私钥仅保存在 `~/.ssh/` 和集群 Secret。
+4. 执行 `./bootstrap/connect-github.sh` 推送 main、交互录入只读 token 并连接 GitOps。推送使用本机 gh 登录；Argo CD token 仅写入集群 Secret，不进入 Git。
 
 私有仓库：https://github.com/eWloYW8/argo-cd.yhzone.top 。根 Application 部署 `clusters/yihao`，其中含独立的 Argo CD 自管理 Application。默认存储只允许首节点，新增节点不会自动承载持久卷。
 
-Argo CD 使用 GitHub SSH 443 端口访问仓库，部署清单自带对应 known_hosts；本机 git origin 使用 HTTPS。
+Argo CD 与本机 git origin 均使用 HTTPS。轮换只读 token：运行 `python3 bootstrap/configure-repository.py`。

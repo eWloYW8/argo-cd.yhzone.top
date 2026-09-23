@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: ssh://git@ssh.github.com:443/eWloYW8/argo-cd.yhzone.top.git
+    repoURL: https://github.com/eWloYW8/argo-cd.yhzone.top.git
     targetRevision: main
     path: clusters/yihao
   destination:
