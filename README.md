@@ -32,7 +32,7 @@ kubectl --context yihao -n argocd get secret argocd-initial-admin-secret -o json
 
 GitHub 地址确定并推送后再创建根 Application。私有仓库凭据只写 Kubernetes Secret，不提交本仓库。初期不启用自动 prune。
 
-后续依次部署入口与证书、监控、Harbor。域名、DNS 凭据、备份位置尚需配置。
+Headlamp、Harbor 代理缓存、cert-manager 和内网 Caddy 已纳入 GitOps。访问方式、登录命令及网络边界见 [服务访问说明](docs/access.md)。异机备份与公网入口尚未配置。
 
 ## 新节点
 

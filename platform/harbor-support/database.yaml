@@ -62,3 +62,6 @@ spec:
       resources:
         requests:
           storage: 5Gi
+      volumeMode: Filesystem
+    apiVersion: v1
+    kind: PersistentVolumeClaim
