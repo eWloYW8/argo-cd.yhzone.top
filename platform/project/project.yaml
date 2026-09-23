@@ -6,13 +6,16 @@ metadata:
 spec:
   description: yihao cluster infrastructure
   sourceRepos:
-    - https://github.com/eWloYW8/argo-cd.yhzone.top.git
+  - https://github.com/eWloYW8/argo-cd.yhzone.top.git
+  - https://charts.jetstack.io
+  - https://helm.goharbor.io
+  - https://kubernetes-sigs.github.io/headlamp/
   destinations:
-    - server: https://kubernetes.default.svc
-      namespace: '*'
+  - server: https://kubernetes.default.svc
+    namespace: '*'
   clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
+  - group: '*'
+    kind: '*'
   namespaceResourceWhitelist:
-    - group: '*'
-      kind: '*'
+  - group: '*'
+    kind: '*'
