@@ -42,14 +42,16 @@ GitHub 地址确定并推送后再创建根 Application。私有仓库凭据只�
 
 `/etc/tmpfiles.d/yihao-k3s-kmsg.conf` 在 `/dev/kmsg` 缺失时链接到 `/dev/console`，让 kubelet 启动。这不是实际内核日志设备，因此内核 OOM 事件观测存在限制。未修改 PVE 宿主机配置。
 
-## 当前阻塞与恢复步骤
+## 初始化与恢复
 
-当前初始化停在 PVE 宿主机参数检查，K3s 已停止，尚无 Ready 节点；Argo CD 与存储 provisioner 尚未部署。`yihao` context 已生成并设为默认。
+2026-09-23：首节点 Ready；Argo CD 和本地存储 provisioner 已安装；集群 DNS、PVC 挂载写入、Pod 重建后的数据读取均已验证。PVE 宿主机所需 sysctl 已生效。`yihao` 为默认 context。
 
-1. 在 PVE 宿主机审阅并应用 `bootstrap/pve-sysctl.conf` 中的三个参数，将其持久化到 `/etc/sysctl.d/`。这些参数影响宿主机及其他容器。
-2. 本机执行 `./bootstrap/resume.sh` 完成节点、存储 provisioner、Argo CD 安装。
-3. 本机 `gh auth login -h github.com` 恢复 GitHub 登录。
+1. 重建前在 PVE 宿主机审阅并应用 `bootstrap/pve-sysctl.conf` 中的三个参数，持久化到 `/etc/sysctl.d/`。这些参数影响宿主机及其他容器。
+2. 安装固定版本 K3s 并恢复管理员 kubeconfig 后，本机执行 `./bootstrap/resume.sh` 引导节点、存储 provisioner 和 Argo CD。
+3. 本机执行 `gh auth login -h github.com` 登录 GitHub。
 4. 执行 `./bootstrap/connect-github.sh` 推送 main、交互录入只读 token 并连接 GitOps。推送使用本机 gh 登录；Argo CD token 仅写入集群 Secret，不进入 Git。
+
+初始 etcd 快照已创建在 `storage/etcd-snapshots`。恢复加密数据还需安全备份 `/var/lib/rancher/k3s/server/token`，不可提交 Git。快照与 PVC 当前都在本机系统盘，尚无异机备份。
 
 私有仓库：https://github.com/eWloYW8/argo-cd.yhzone.top 。根 Application 部署 `clusters/yihao`，其中含独立的 Argo CD 自管理 Application。默认存储只允许首节点，新增节点不会自动承载持久卷。
 

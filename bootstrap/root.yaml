@@ -4,7 +4,7 @@ metadata:
   name: yihao
   namespace: argocd
 spec:
-  project: default
+  project: yihao
   source:
     repoURL: https://github.com/eWloYW8/argo-cd.yhzone.top.git
     targetRevision: main

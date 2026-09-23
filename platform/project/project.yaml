@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: yihao
+  namespace: argocd
+spec:
+  description: yihao cluster infrastructure
+  sourceRepos:
+    - https://github.com/eWloYW8/argo-cd.yhzone.top.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
