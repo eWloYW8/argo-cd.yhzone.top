@@ -1,0 +1,6 @@
+# Local Harbor project; image-prefix component adds the registry hostname.
+image: zjulibbooking/app@sha256:96df3e502b01f03f95cd3e574b5d3777150a05e9e77b24b70c5b923bc655f03d
+nodeName: yihao-pve-debian
+hosts:
+  internal: zjulib.k8s.yhzone.top
+  public: zjulib.yhzone.top

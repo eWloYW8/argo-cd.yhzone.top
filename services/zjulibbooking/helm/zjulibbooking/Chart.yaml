@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zjulibbooking
+description: ZJU library booking web application
+type: application
+version: 0.1.0
+appVersion: be0066188b5a

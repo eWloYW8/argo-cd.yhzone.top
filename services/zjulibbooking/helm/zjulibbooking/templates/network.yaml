@@ -1,0 +1,58 @@
+{{- range $scope, $host := .Values.hosts }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ $scope }}
+  {{- if eq $scope "public" }}
+  annotations:
+    traefik.ingress.kubernetes.io/service.nativelb: 'true'
+  {{- end }}
+spec:
+  {{- if eq $scope "public" }}
+  trafficDistribution: PreferSameNode
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ $.Release.Name }}
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Release.Name }}-{{ $scope }}
+  {{- if eq $scope "public" }}
+  labels:
+    networking.yhzone.top/exposure: public
+  {{- end }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    {{- if eq $scope "public" }}
+    networking.yhzone.top/publish-dns: 'true'
+    {{- else }}
+    dns.yhzone.top/managed: 'true'
+    external-dns.kubernetes.io/target: 10.1.2.4
+    external-dns.kubernetes.io/ttl: '300'
+    external-dns.kubernetes.io/cloudflare-proxied: 'false'
+    {{- end }}
+spec:
+  ingressClassName: {{ if eq $scope "public" }}traefik-public{{ else }}traefik{{ end }}
+  tls:
+  - hosts:
+    - {{ $host }}
+    secretName: {{ $.Release.Name }}-{{ $scope }}-tls
+  rules:
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ $.Release.Name }}-{{ $scope }}
+            port:
+              number: 80
+{{- end }}

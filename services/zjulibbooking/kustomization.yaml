@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: zjulibbooking
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: zjulibbooking
+  version: 0.1.0
+  releaseName: zjulibbooking
+  namespace: zjulibbooking
+  valuesFile: values/zjulibbooking-0.1.0.yaml
+components:
+- ../../components/image-prefix
