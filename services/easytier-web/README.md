@@ -30,3 +30,7 @@ Pod 通过限定 `hostIP: 127.0.0.1` 的 hostPort 接管首节点原 `11211/TCP`
 2. 对最新 PVC 完整冷备份，再将最新数据恢复到原 Docker 数据目录，保持所有者/权限。SQLite 数据库与 WAL 必须配套恢复；恢复独立 SQLite backup 文件时不得混用旧 WAL/SHM。
 3. 用 `docker compose --profile legacy-rollback up -d` 启动原实例。无需修改 Caddy，随后检查页面认证、RPC WebSocket 握手和节点重连。
 4. 切勿并行运行两个可写实例，或不经确认直接用迁移前旧库覆盖切换后的数据。PVC 不应删除。
+
+## 节点启动依赖
+
+两个节点的 EasyTier 原本仅使用 Web 配置服务启动。为解除重启时的依赖循环，已将各节点当前运行的原实例 TOML 保存到节点本地受限目录，并配置 `ET_CONFIG_DIR`。不重启当前 EasyTier，设置下次服务启动生效；未执行整机重启测试。路径、恢复及当前快照更新要求见 [节点本地启动配置](../../bootstrap/easytier/README.md)。
