@@ -4,7 +4,7 @@ Local Helm chart, managed by the `hysteria2` Argo CD Application. The original v
 
 ## Network compatibility
 
-The single Recreate Deployment uses host networking and UDP 30443. This preserves IPv6 direct access and the existing FRPC mapping (`ali-sas:30443/udp` -> first-node `127.0.0.1:30443/udp`). Existing clients, passwords, masquerade configuration, and DNS records remain unchanged. This is a UDP proxy, not a public HTTPS Ingress; the HTTP gateway port 20443 does not apply. FRPC remains a Docker dependency for the existing IPv4 relay.
+The single Recreate Deployment uses host networking and UDP 30443. IPv6 still connects directly. IPv4 now reaches the Argo CD-managed `hysteria2-udp-gateway` on ali-sas, which forwards UDP through the `hysteria2-udp` ClusterIP Service to this Pod. FRPC is no longer involved. Existing clients, passwords, masquerade configuration, and DNS records remain unchanged. The HTTPS gateway port 20443 does not apply. See [UDP gateway](../hysteria2-udp-gateway/README.md) for routing, verification and rollback.
 
 Do not run the original Docker listener concurrently. The final replica count is one; initial migration stages the Deployment at zero while cert-manager issues its certificate. No PVC is necessary.
 

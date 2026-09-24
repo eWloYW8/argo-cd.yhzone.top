@@ -87,7 +87,7 @@ ZJULibBooking 的公网域名 `zjulib.yhzone.top` 需 Basic Auth，用户名为 
 
 NeverRun 公网入口 `https://neverrun.yhzone.top:20443`，沿用原 NeverRun Caddy 站点的 Basic Auth，凭据保存在 `neverrun/public-basic-auth`。旧 `neverrun.d.yhzone.top:20443` 入口已移除。内网入口不加 Basic Auth。
 
-Hysteria2 为 UDP 服务，继续使用 30443 端口、既有域名和密码，IPv4 仍经 ali-sas 的 FRP 链路，IPv6 可直连首节点。其 `hysteria2/hysteria2-tls` Certificate 通过 Cloudflare DNS01 签发 `*.yhzone.top`，Secret 整目录挂载支持续期投射，Hysteria 在新 TLS 握手时读取证书。无需修改现有客户端配置。
+Hysteria2 为 UDP 服务，继续使用 30443 端口、既有域名和密码，IPv4 经 ali-sas 上由 Argo CD 管理的 Hysteria2 UDP 网关，IPv6 可直连首节点。其 `hysteria2/hysteria2-tls` Certificate 通过 Cloudflare DNS01 签发 `*.yhzone.top`，Secret 整目录挂载支持续期投射，Hysteria 在新 TLS 握手时读取证书。无需修改现有客户端配置。
 
 ## 新迁移的四个服务
 
@@ -123,4 +123,4 @@ Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kube
 
 ## 保留域名的公网 IPv4 转发
 
-ali-sas 的 Kubernetes SNI 网关直接通过 EasyTier 转发到 `10.1.2.4:21443`，不再使用 FRPC 的 Caddy TCP 条目。EasyTier Web/WSS、New API、Vaultwarden 以及其他原 Caddy 站点的域名、端口和认证保持不变。旧域名的 TLS/HTTP 配置仍由原 Caddy 承载，未转换为每站点 Ingress。Hysteria2 的 UDP 30443 仍依赖 FRPC。
+ali-sas 的 Kubernetes SNI 网关直接通过 EasyTier 转发到 `10.1.2.4:21443`，不再使用 FRPC 的 Caddy TCP 条目。EasyTier Web/WSS、New API、Vaultwarden 以及其他原 Caddy 站点的域名、端口和认证保持不变。旧域名的 TLS/HTTP 配置仍由原 Caddy 承载，未转换为每站点 Ingress。Hysteria2 的 UDP 30443 已由 Kubernetes 的 `hysteria2-udp-gateway` 接管，不再依赖 FRPC。
