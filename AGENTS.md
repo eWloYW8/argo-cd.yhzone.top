@@ -1,41 +1,21 @@
-# Repository conventions
+# 仓库约定
 
-- Use Conventional Commits: `feat(scope): ...`, `fix(scope): ...`, `docs(scope): ...`, `chore(scope): ...`.
-- Every kubectl mutation must explicitly select context `yihao`.
-- Never commit credentials, tokens, private keys, rendered Secrets, or kubeconfigs.
-- Pin chart/image versions. Deploy application resources through Argo CD.
-- Store persistent application data with the `yihao-local` StorageClass.
-- Validate changed Kustomize/Helm manifests before pushing.
+- 使用 Conventional Commits；kubectl 写操作显式指定 `--context yihao`。
+- 本仓库公开，禁止提交凭据、私钥、kubeconfig 或渲染后的 Secret。未加密 Secret 只放私有 `eWloYW8/argo-cd-secrets.yhzone.top`；仓库访问密钥留在 Git 外。
+- 一个服务一个 `services/<服务>/`，包含 `app.yaml` 与 `kustomization.yaml`。服务资源和脚本留在对应目录，`bootstrap/` 只放主机与集群启动配置。
+- Chart、镜像固定版本；上游完整 values 使用 `values/<chart>-<version>.yaml`。下载的 `charts/` 不提交，自定义 Chart 放 `helm/`。
+- 修改清单后运行 `kubectl --context yihao kustomize --enable-helm services/<服务>`；不输出凭据。不从参考仓库复制密钥或环境专属配置。
+- 数据使用 `yihao-local`。接管 Secret 时保留名称和原值；自动 prune 关闭，不擅自删除数据。
 
-## Service layout
+## 镜像与网络
 
-- One service, one directory under `services/`, one generated Argo CD Application.
-- Each directory has `app.yaml` (name, namespace, ignoreDifferences) and `kustomization.yaml` (the workload entrypoint).
-- Use pinned upstream `helmCharts` and full, versioned `values/<chart>-<version>.yaml`; combine supplemental resources with Kustomize.
-- Keep resources and service-specific scripts within the same service directory.
-- Do not commit downloaded `charts/`; chart caches are ignored.
-- `clusters/yihao` contains the root Application and ApplicationSet; ApplicationSet discovers `services/*/app.yaml`.
-- `bootstrap/` contains only host/cluster bootstrap configuration.
-- Validate using `kubectl kustomize --enable-helm services/<service>` before pushing. Do not print rendered Secrets.
-- Never copy credentials or environment-specific networking from reference repositories.
+- 普通服务引用 `../../components/image-prefix`，渲染后只加一次 `harbor.k8s.yhzone.top/`。Docker Hub 短名先规范化为 `docker.io/library/<镜像>` 或 `docker.io/<组织>/<镜像>`。
+- 自建镜像使用 Harbor 私有项目和命名空间内的只读拉取凭据，不推入代理缓存项目。缓存配额见 `services/harbor/resources/cache-config.json`。
+- Harbor 及其数据库/初始化任务、Traefik、cert-manager、ExternalDNS、本地存储、public-network、hysteria2-udp-gateway 和 K3s 组件直接使用上游镜像，避免启动循环依赖。
+- 内网使用 `traefik`、`*.k8s.yhzone.top:443`；公网使用 `traefik-public`、显式 exposure 标签和 20443。公网拒绝内网域名。
+- `NodePublicIPv6` 必须人工声明，不自动发现或登记地址。AAAA 要求授权、节点、网关和本机服务后端均就绪。
+- 公网后端使用独立 Service、NativeLB 和 PreferSameNode，DNS 由 DNSEndpoint 发布。保留 SNI 到 `10.1.2.4:21443` 的旧 Caddy 回退，不将公网全量导向内网 Ingress。
 
-## Default image registry
+## 文档
 
-- Ordinary services include `../../components/image-prefix` in `components` to use `harbor.k8s.yhzone.top/<upstream>/<image>`.
-- Normalize short Docker Hub names to `docker.io/library/<image>` (or `docker.io/<organization>/<image>`) before prefixing; verify rendered images have exactly one Harbor prefix.
-- Locally built application images may use a private hosted Harbor project: specify `<project>/<image>@sha256:<digest>` before the prefix component and reference a namespace-scoped pull-only robot Secret; never push into proxy-cache projects.
-- Bootstrap exceptions: Harbor and its database/setup Job, Traefik (internal/public), public-network controller/SNI edge and hysteria2-udp-gateway, cert-manager, ExternalDNS (internal/public), local-path-provisioner, and K3s system components use upstream images to avoid circular dependencies.
-- Proxy projects and their total 30 GiB quota are declared in `services/harbor/resources/cache-config.json`; see that service README before adding a registry.
-
-## Public networking
-
-- Internal Ingress class is `traefik`, domains `*.k8s.yhzone.top`, EasyTier-only port 443. Public class is `traefik-public`, opt-in label `networking.yhzone.top/exposure=public`, domains `<service>.yhzone.top` or preserved `<service>.d.yhzone.top`, port 20443.
-- NodePublicIPv6 resources are manually authored; never add automatic IPv6 discovery/enrollment. AAAA requires the explicit resource, Ready node/gateway and Ready service backend on that node.
-- Public backends use a separate Service with NativeLB annotation and `trafficDistribution: PreferSameNode`; public DNS is generated as DNSEndpoint, not via internal ExternalDNS annotations.
-- Preserve legacy Caddy via the SNI fallback to 10.1.2.4:21443 over EasyTier; HTTPS no longer depends on FRP. Do not replace the public edge with a catch-all route to internal Ingress.
-
-## Secret separation
-
-- This configuration repository is public. Never copy Secret values from the private repository into it.
-- User-authorized unencrypted Secret manifests live only in private `eWloYW8/argo-cd-secrets.yhzone.top`, reconciled by `yihao-secrets`.
-- Preserve Secret names and data during adoption; automatic pruning is disabled. The private repository read-only deploy key remains bootstrap material outside both repositories.
+默认更新现有 README 或 docs，不为每个服务新增说明。只保留配置无法直接表达的原因、依赖和恢复要点；不重复 YAML，不堆迁移过程、验证流水账和模板化总结。短句、具体事实，避免宣传性措辞。

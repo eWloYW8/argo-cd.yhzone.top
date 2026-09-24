@@ -1,98 +1,33 @@
-# yihao GitOps
+# argo-cd.yhzone.top
 
-K3s / EasyTier 私有集群，默认 context 为 `yihao`。首节点 `yihao-pve-debian`，API 为 `https://10.1.2.4:6443`。
+个人 K3s 集群的 GitOps 配置，context 为 `yihao`。节点通过 EasyTier 互联。
 
-## 目录约定
+| 节点 | EasyTier 地址 | 用途 |
+| --- | --- | --- |
+| yihao-pve-debian | 10.1.2.4 | 控制平面、应用、本地存储 |
+| ali-sas | 10.1.2.2 | 公网 IPv4 入口、worker |
 
-```text
-services/
-  argocd/                  # Argo CD 自管理与项目权限
-  cert-manager/            # Helm + Cloudflare ACME 签发器
-  external-dns/            # Helm + Cloudflare DNS 自动管理
-  harbor/                  # Helm + PostgreSQL + 缓存初始化任务
-  headlamp/                # Helm + 登录 RBAC
-  traefik/                 # Helm + 标准 Ingress 内网 HTTPS 入口
-  public-network/          # 公网 SNI/Ingress + 手工节点 IPv6 授权
-  external-dns-public/     # 公网 A/AAAA 的独立 DNS 控制器
-  local-path-provisioner/  # 本地存储
-  zjulibbooking/           # 本地 Helm Chart + 图书馆预约服务
-  zju-autosign/            # 本地 Helm Chart + 后台签到轮询
-  neverrun/                # 本地 Helm Chart + 内外网入口
-  hysteria2/               # UDP 30443 + cert-manager 证书
-  subcon/                  # 订阅转换与持久化配置
-  ascend-compiler-explorer/ # CANN 编译工具链与持久化缓存
-  funasr-nano/              # CPU 语音识别与模型 PVC
-  zhiyun-tools/             # 智云工具、SQLite 与加密密钥 PVC
-clusters/yihao/             # 根 Application、ApplicationSet
-bootstrap/                 # K3s、LXC、宿主机引导
-docs/                      # 访问、恢复等运维说明
-```
+## 仓库
 
-每个服务一个目录、一个 Application：
+- `services/<服务>/`：一个服务一个目录，`app.yaml` 供 ApplicationSet 发现，`kustomization.yaml` 组合 Helm 和资源。
+- `clusters/yihao/`：根 Application、ApplicationSet、Secret Application。
+- `components/image-prefix/`：普通服务的 Harbor 镜像前缀。
+- `bootstrap/`：主机配置和集群启动资料。
+- [私有 Secret 仓库](https://github.com/eWloYW8/argo-cd-secrets.yhzone.top)：未加密的业务凭据，由 `yihao-secrets` 同步。本仓库公开，不存凭据。
 
-```text
-services/harbor/
-  app.yaml                 # Application 名称、namespace、差异忽略规则
-  kustomization.yaml       # 服务入口：Helm Chart + 补充资源
-  values/harbor-1.19.2.yaml # 对应版本的完整默认值及本集群修改
-  resources/               # 数据库、PostSync 缓存初始化等
-  scripts/                 # 该服务的引导工具
-```
+Argo CD 自动同步、自愈，不自动 prune。删除 Git 文件后，仍需显式删除集群资源；命名空间和 Secret 另有删除保护。控制器生成的证书、PV、DNS 输出不重复声明。
 
-结构借鉴 `argo-cd.clusters.zjusct.io`。ApplicationSet 自动发现 `services/*/app.yaml`，无需为每个服务手写 Application。资源名称与 namespace 不强制随文件夹重命名，以保留存储与访问地址。纯清单服务使用 Kustomize；Argo CD 沿用固定版本官方清单，避免本次目录整理同时更换安装来源。
-
-`charts/` 是 Kustomize 下载缓存，不提交 Git。Helm Chart 版本在各服务 `kustomization.yaml` 中固定，values 文件名包含对应版本。真实凭据不写入本公开仓库；28 个业务及基础设施 Secret 由独立私有仓库管理。
-
-## 修改与验证
+修改服务后先渲染，再按 Conventional Commits 提交：
 
 ```sh
-kubectl kustomize --enable-helm services/harbor
-kubectl kustomize clusters/yihao
+kubectl --context yihao kustomize --enable-helm services/<服务>
 ```
 
-需要本机安装 Helm。渲染输出可能包含 Secret，不要提交或公开。提交遵循 Conventional Commits，例如 `feat(harbor): ...`、`fix(cert-manager): ...`。
+需要 Helm。Chart 和镜像固定版本，下载的 `charts/` 不提交；自定义 Chart 放在 `helm/`。渲染结果可能包含 Secret，不公开输出。
 
-新增服务时，增加服务目录、`app.yaml` 与 `kustomization.yaml` 后提交即可。ApplicationSet 采用 create-update，且自动 prune 关闭；移除服务需要显式检查并处理 Application 与资源，避免误删持久化数据。
+## 运维
 
-## 访问
+- [网络](docs/network.md)：内外网入口、DNS、证书、IPv6 登记。
+- [维护](docs/operations.md)：登录、存储、凭据恢复、节点启动依赖。
 
-- https://headlamp.k8s.yhzone.top
-- https://argo-cd.k8s.yhzone.top
-- https://harbor.k8s.yhzone.top
-- https://zjulib.k8s.yhzone.top
-
-内网 DNS 指向 EasyTier `10.1.2.4:443`。Harbor 已开放公网 `https://harbor.yhzone.top:20443`：IPv4 经 ali-sas 中转，IPv6 使用手工授权节点地址。登录和缓存用法见 [访问说明](docs/access.md)。
-
-## 引导与恢复
-
-`bootstrap/k3s/config.yaml` 仅用于首节点；K3s 由宿主机 systemd 管理。先完成 PVE sysctl、EasyTier 和 K3s 安装，再运行 `bootstrap/resume.sh`。已有集群直接使用 `yihao` context。
-
-私有仓库连接：`services/argocd/scripts/connect-github.sh`，只读 token 交互录入。它创建项目并应用 `clusters/yihao/application.yaml`。凭据初始化与恢复要求见访问说明。
-
-PVC 数据位于 `~/k8s/storage/pvc`，etcd 快照位于 `~/k8s/storage/etcd-snapshots`。当前与系统盘共用文件系统；同盘快照不是异机备份。恢复需要数据库/镜像数据、Secret 和 K3s server token。
-
-新增节点需固定 EasyTier IP，检查与 Pod `10.42.0.0/16`、Service `10.43.0.0/16` 的网段冲突；不要复制首节点 cluster-init 配置。本地持久卷只放在首节点。
-
-LXC 的 `/dev/kmsg` 使用 console 兼容链接，内核 OOM 观测存在限制；NetworkManager 排除 CNI 接口的配置位于 `bootstrap/k3s/`。
-
-DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/README.md)。
-
-新增 HTTP 服务使用各自目录中的 Ingress，自动完成路由、证书及 DNS 配置，见 [入口说明](services/traefik/README.md)。
-
-普通服务默认采用 [Harbor 镜像前缀](services/harbor/README.md)，通过共享 Kustomize component 管理；基础启动组件保留直连上游。Argo CD 访问地址为 `https://argo-cd.k8s.yhzone.top`。
-
-第二个节点 `ali-sas`（EasyTier `10.1.2.2`）作为 worker 加入，部署与资源限制见 [节点说明](bootstrap/nodes/ali-sas/README.md)。
-
-公网服务和 NodePublicIPv6 手工地址资源的管理见 [公网入口说明](services/public-network/README.md)。其余内网服务未公开。
-
-图书馆预约服务公网地址为 `https://zjulib.yhzone.top:20443`，旧域名入口已移除。镜像、内存任务限制及回退说明见 [ZJULibBooking](services/zjulibbooking/README.md)。
-
-后台签到程序 [ZJU-Autosign](services/zju-autosign/README.md) 以单副本运行，无网页或公网入口，凭据由 Secret 提供。
-
-[NeverRun](services/neverrun/README.md) 公网入口为 `https://neverrun.yhzone.top:20443`（原 Basic Auth），内网为 `https://neverrun.k8s.yhzone.top`。旧 `.d.yhzone.top` 入口已移除。[Hysteria2](services/hysteria2/README.md) 保留 UDP 30443、原密码和 FRP IPv4 转发，证书由 cert-manager 自动管理。
-
-Subcon、Ascend Compiler Explorer、FunASR Nano、ZhiyunTools 已迁移至独立 Helm 服务目录，公网域名分别为 `subcon.yhzone.top`、`ascendc.yhzone.top`、`funasr.yhzone.top`、`zhiyun.yhzone.top`，端口均为 `20443`。旧 `.d.yhzone.top` 入口已移除。迁移备份与校验清单位于 `~/k8s/storage/backups/migration-20260924/`；各服务 README 记录数据布局与恢复步骤。
-
-资源归属、补充声明和 Secret 依赖见 [资源审计](docs/resource-ownership.md)。
-
-Secret Application `yihao-secrets` 读取私有仓库 [argo-cd-secrets.yhzone.top](https://github.com/eWloYW8/argo-cd-secrets.yhzone.top)，按用户要求存储未加密 Secret；只读仓库访问密钥保留为独立启动凭据。
+文档只记配置中看不出的依赖和维护要点。版本、端口、资源配额以清单为准，变更过程查 Git 历史。
