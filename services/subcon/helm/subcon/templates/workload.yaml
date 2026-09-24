@@ -43,6 +43,8 @@ spec:
           readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
           capabilities:
             drop: [ALL]
+            # Existing config contains both UID 1000 and root-owned files.
+            add: [DAC_OVERRIDE]
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         startupProbe:
