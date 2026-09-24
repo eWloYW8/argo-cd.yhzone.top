@@ -4,7 +4,7 @@
 
 ## 访问
 
-- 保留 `https://keys.yhzone.top:20443` 和 `https://keys.poc.pub:20443`。现有 Caddy/FRP/SNI fallback 链路转接 Kubernetes 内网 Ingress，支持 WebSocket。
+- 保留 `https://keys.yhzone.top:20443` 和 `https://keys.poc.pub:20443`。现有 Caddy/SNI fallback（经 EasyTier 直连） 链路转接 Kubernetes 内网 Ingress，支持 WebSocket。
 - 新公网入口 `https://vaultwarden.yhzone.top:20443`；内网 `https://vaultwarden.k8s.yhzone.top`。新域名证书由 cert-manager / Cloudflare DNS01 管理。
 - 原 `config.json` 的 domain 仍为 `https://keys.yhzone.top:20443`，客户端无需修改服务器地址。账号、两步验证、管理配置和 SMTP 配置保持原样，不额外增加 Basic Auth。
 

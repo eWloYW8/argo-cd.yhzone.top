@@ -8,7 +8,7 @@
 - 配置下发/RPC：`wss://easytier-rpc.yhzone.top:20443/<原客户端路径>`，保留现有客户端用户名路径及 WebSocket 协议，不增加 Basic Auth。
 - `WEB_DEFAULT_API_HOST=https://easytier.yhzone.top:20443`、全部端口和其他原环境配置不变。
 
-Pod 通过限定 `hostIP: 127.0.0.1` 的 hostPort 接管首节点原 `11211/TCP`（页面/API）和 `22020/TCP`（WS 配置服务）。原 Caddy upstream、认证、请求头处理、DNS、证书及 FRP/SNI 链路全部保持不变，不注册覆盖现有入口的公网 Ingress。集群内另提供同端口 ClusterIP Service `easytier-web`。
+Pod 通过限定 `hostIP: 127.0.0.1` 的 hostPort 接管首节点原 `11211/TCP`（页面/API）和 `22020/TCP`（WS 配置服务）。原 Caddy upstream、认证、请求头处理、DNS、证书及 SNI 链路全部保持不变，不注册覆盖现有入口的公网 Ingress。集群内另提供同端口 ClusterIP Service `easytier-web`。
 
 保留此入口方式是为了使现有节点准确重连；不能同时启动原 Docker 容器，否则端口冲突。原 Basic Auth 仅在 Caddy 上管理。页面公网端口仍为 20443，Caddy 本地接入端口为 21443。
 

@@ -4,7 +4,7 @@
 
 ## 入口
 
-- 保留原公网地址：`https://newapi.d.yhzone.top:20443`。旧 Caddy 站点转发至内网 Kubernetes Ingress，仍依赖现有 Caddy/FRP/SNI fallback 链路。
+- 保留原公网地址：`https://newapi.d.yhzone.top:20443`。旧 Caddy 站点转发至内网 Kubernetes Ingress，仍依赖现有 Caddy/SNI fallback（经 EasyTier 直连） 链路。
 - 新公网地址：`https://newapi.yhzone.top:20443`。
 - 内网地址：`https://newapi.k8s.yhzone.top`。
 

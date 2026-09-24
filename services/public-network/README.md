@@ -122,3 +122,11 @@ DNS 不是即时故障切换，TTL/客户端缓存及地址变更可能延迟；
 The public Traefik enables the Kubernetes CRD provider to resolve authentication Middleware resources. It retains the public exposure label selector, class `traefik-public`, and disabled cross-namespace references. Standard Ingress remains the service routing interface. The public chart owns the Traefik CRDs.
 
 ZJULibBooking opts into a namespace-local Basic Auth Middleware. There is no global authentication middleware: Harbor retains its native registry authentication. Secret hashes are bootstrapped outside Git; `scripts/import-basic-auth.py` can copy one explicitly selected Caddy site's bcrypt credentials into a namespace-local Secret. It does not print credentials.
+
+## 2026-09-24 旧入口 IPv4 去除 FRP 依赖
+
+旧站点的 SNI 默认后端已改为 `10.1.2.4:21443`，两个 Kubernetes 网关均使用该目标。验证 ali-sas 实际建立了经 EasyTier 到首节点的 TCP 连接，随后删除 FRPC 的 `caddy` TCP 条目并重启 FRPC。剩余 FRPC 条目为 Hysteria2 UDP 30443 和历史 EasyTier UDP 22020。
+
+17 个具体旧域名在切换前后状态一致；原已返回 502 的失效站点未在本次修复。Vaultwarden、New API 页面正常，EasyTier 页面保留 Basic Auth 401，WSS 升级为 101。IPv4 与首节点 IPv6 路径均验证；Hysteria2 IPv4 经原 UDP 转发的认证连接及代理 HTTPS 请求通过。
+
+FRPC 原配置备份：`~/k8s/storage/backups/legacy-direct-20260924/frpc.toml.before`（含认证信息，不入 Git）。如需回退，先恢复 TCP 转发并验证 ali-sas:21443 已监听，再把 Git 中 `LEGACY_ADDRESS` 设回 `127.0.0.1`，等待两个网关加载；不要先改路由而留下空后端。

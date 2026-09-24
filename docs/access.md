@@ -119,3 +119,8 @@ Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kube
 已迁入 Kubernetes，精确保留管理页面 `https://easytier.yhzone.top:20443` 与配置下发入口 `wss://easytier-rpc.yhzone.top:20443/<原客户端路径>`。原 Basic Auth、应用账号、客户端路径、端口和 Caddy 配置不变，客户端无需调整。Pod 接管原 loopback 11211/22020 端口；宿主机 EasyTier 组网服务保持独立运行。
 
 迁移前完整数据及配置备份在 `~/k8s/storage/backups/easytier-web-migration-20260924/`，原 Docker 数据保留。详见 [EasyTier Web](../services/easytier-web/README.md)。
+
+
+## 保留域名的公网 IPv4 转发
+
+ali-sas 的 Kubernetes SNI 网关直接通过 EasyTier 转发到 `10.1.2.4:21443`，不再使用 FRPC 的 Caddy TCP 条目。EasyTier Web/WSS、New API、Vaultwarden 以及其他原 Caddy 站点的域名、端口和认证保持不变。旧域名的 TLS/HTTP 配置仍由原 Caddy 承载，未转换为每站点 Ingress。Hysteria2 的 UDP 30443 仍依赖 FRPC。
