@@ -41,7 +41,7 @@ services/harbor/
 
 结构借鉴 `argo-cd.clusters.zjusct.io`。ApplicationSet 自动发现 `services/*/app.yaml`，无需为每个服务手写 Application。资源名称与 namespace 不强制随文件夹重命名，以保留存储与访问地址。纯清单服务使用 Kustomize；Argo CD 沿用固定版本官方清单，避免本次目录整理同时更换安装来源。
 
-`charts/` 是 Kustomize 下载缓存，不提交 Git。Helm Chart 版本在各服务 `kustomization.yaml` 中固定，values 文件名包含对应版本。真实凭据通过 Secret 引导，不写入 values 或 Git。
+`charts/` 是 Kustomize 下载缓存，不提交 Git。Helm Chart 版本在各服务 `kustomization.yaml` 中固定，values 文件名包含对应版本。真实凭据不写入本公开仓库；28 个业务及基础设施 Secret 由独立私有仓库管理。
 
 ## 修改与验证
 
@@ -93,4 +93,6 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 
 Subcon、Ascend Compiler Explorer、FunASR Nano、ZhiyunTools 已迁移至独立 Helm 服务目录，公网域名分别为 `subcon.yhzone.top`、`ascendc.yhzone.top`、`funasr.yhzone.top`、`zhiyun.yhzone.top`，端口均为 `20443`。旧 `.d.yhzone.top` 入口已移除。迁移备份与校验清单位于 `~/k8s/storage/backups/migration-20260924/`；各服务 README 记录数据布局与恢复步骤。
 
-资源归属、补充声明和外部 Secret 依赖见 [资源审计](docs/resource-ownership.md)。
+资源归属、补充声明和 Secret 依赖见 [资源审计](docs/resource-ownership.md)。
+
+Secret Application `yihao-secrets` 读取私有仓库 [argo-cd-secrets.yhzone.top](https://github.com/eWloYW8/argo-cd-secrets.yhzone.top)，按用户要求存储未加密 Secret；只读仓库访问密钥保留为独立启动凭据。

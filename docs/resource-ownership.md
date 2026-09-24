@@ -7,7 +7,7 @@ Audit scope: live resources in context `yihao`, compared with all Argo CD Applic
 - Added 20 explicit Namespace manifests to the corresponding service directories. `local-path-storage` was already declared. `external-dns-public` shares the namespace owned by `external-dns`; `hysteria2-udp-gateway` shares the namespace owned by `public-network`.
 - Retained the currently empty `platform-certificates` namespace under cert-manager. Namespace creation was previously implicit (`CreateNamespace=true`) or manual. Explicit manifests now give them a single GitOps owner. Newly declared namespaces use `Prune=false,Delete=false` to prevent accidental namespace-wide data removal.
 - Included the existing root `Application/argocd/yihao` manifest in `clusters/yihao/kustomization.yaml`. It still needs initial bootstrap on a new cluster, then manages its own declaration.
-- Recorded 29 externally provisioned Secret dependencies, including their required key names, in [the bootstrap inventory](../bootstrap/secret-inventory.yaml). This inventory is documentation, not a Secret manifest and not a credential backup. Actual values remain outside Git. Do not create empty placeholder Secrets: they can overwrite working credentials.
+- Initially identified 29 external Secret dependencies. Subsequently adopted 28 into the private Secret repository through Application `yihao-secrets`. The old configuration-repository access credential is unnecessary now that the configuration repository is public. The private repository access Secret remains bootstrap-only. See [the dependency inventory](../bootstrap/secret-inventory.yaml); it contains no values.
 
 ## Resources deliberately owned by other controllers
 
@@ -27,8 +27,10 @@ Do not export live objects wholesale into Git: runtime status, generated names a
 
 ## Secrets and disaster recovery
 
-The 29 external Secrets include GitHub repository access, Cloudflare credentials, Harbor bootstrap/signing credentials, image pull credentials, Basic Auth, Hysteria2 configuration and application/database environment values. Workloads already reference them, but their values cannot be reconstructed from Git.
+The public configuration repository contains no credential values. The private repository `eWloYW8/argo-cd-secrets.yhzone.top` stores 28 user-authorized unencrypted Secret manifests, grouped by namespace. Base64 `data` preserves bytes and supports Server-Side Apply; it is not encryption.
 
-Existing import/seed helpers are in the relevant service directories, including cert-manager, external-dns, Harbor and public-network. Other imported application credentials require a protected backup or the original source. Restoring an existing database requires its original passwords/signing material; do not blindly regenerate them.
+Application `yihao-secrets` uses a dedicated project permitting only Secrets in the required namespaces. Both automatic pruning and deletion of individual Secrets are disabled. Values, names and namespaces were preserved during adoption. Changing credentials through Git may require restarting their consumers.
 
-A future encrypted-secret or external-secret backend could make secret restoration declarative, but none is currently deployed. This audit does not claim those 29 Secrets are reconciled by Argo CD. Keep credential backups, PV/application data and K3s recovery material outside the repository.
+The private repository is read using a dedicated read-only GitHub deploy key. Its private key is bootstrap material outside both repositories, stored locally in `~/k8s/.bootstrap/repo-split/secrets-deploy-key` and in `argocd/yihao-secrets-git-repository`. Restore this access Secret before reconciling the private Application on a new cluster; alternatively register a new read-only deploy key. The public repository can be cloned without credentials.
+
+Controller-generated certificates, ACME state and service-account tokens remain outside this private repository. Persistent application data and K3s recovery material still require separate protected backups. Keeping a private plaintext Git repository does not protect against access by collaborators or compromised clone copies.
