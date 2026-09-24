@@ -33,3 +33,9 @@
 - NodePublicIPv6 resources are manually authored; never add automatic IPv6 discovery/enrollment. AAAA requires the explicit resource, Ready node/gateway and Ready service backend on that node.
 - Public backends use a separate Service with NativeLB annotation and `trafficDistribution: PreferSameNode`; public DNS is generated as DNSEndpoint, not via internal ExternalDNS annotations.
 - Preserve legacy Caddy via the SNI fallback to 10.1.2.4:21443 over EasyTier; HTTPS no longer depends on FRP. Do not replace the public edge with a catch-all route to internal Ingress.
+
+## Secret separation
+
+- This configuration repository is public. Never copy Secret values from the private repository into it.
+- User-authorized unencrypted Secret manifests live only in private `eWloYW8/argo-cd-secrets.yhzone.top`, reconciled by `yihao-secrets`.
+- Preserve Secret names and data during adoption; automatic pruning is disabled. The private repository read-only deploy key remains bootstrap material outside both repositories.
