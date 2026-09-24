@@ -11,3 +11,5 @@ helmCharts:
   valuesFile: values/subcon-0.1.0.yaml
 components:
 - ../../components/image-prefix
+resources:
+- resources/namespace.yaml

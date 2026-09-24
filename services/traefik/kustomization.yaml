@@ -8,3 +8,5 @@ helmCharts:
   releaseName: traefik
   namespace: traefik
   valuesFile: values/traefik-41.6.0.yaml
+resources:
+- resources/namespace.yaml

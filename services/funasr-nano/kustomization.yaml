@@ -11,3 +11,5 @@ helmCharts:
   valuesFile: values/funasr-nano-0.1.0.yaml
 components:
 - ../../components/image-prefix
+resources:
+- resources/namespace.yaml

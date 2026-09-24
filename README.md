@@ -92,3 +92,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 [NeverRun](services/neverrun/README.md) 公网入口为 `https://neverrun.yhzone.top:20443`（原 Basic Auth），内网为 `https://neverrun.k8s.yhzone.top`。旧 `.d.yhzone.top` 入口已移除。[Hysteria2](services/hysteria2/README.md) 保留 UDP 30443、原密码和 FRP IPv4 转发，证书由 cert-manager 自动管理。
 
 Subcon、Ascend Compiler Explorer、FunASR Nano、ZhiyunTools 已迁移至独立 Helm 服务目录，公网域名分别为 `subcon.yhzone.top`、`ascendc.yhzone.top`、`funasr.yhzone.top`、`zhiyun.yhzone.top`，端口均为 `20443`。旧 `.d.yhzone.top` 入口已移除。迁移备份与校验清单位于 `~/k8s/storage/backups/migration-20260924/`；各服务 README 记录数据布局与恢复步骤。
+
+资源归属、补充声明和外部 Secret 依赖见 [资源审计](docs/resource-ownership.md)。

@@ -10,4 +10,5 @@ helmCharts:
   includeCRDs: true
   valuesFile: values/external-dns-1.22.0.yaml
 resources:
+- resources/namespace.yaml
 - resources/internal-wildcard.yaml
