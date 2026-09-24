@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: internal-wildcard-dns
+  annotations:
+    dns.yhzone.top/managed: "true"
+    external-dns.kubernetes.io/hostname: "*.k8s.yhzone.top"
+    external-dns.kubernetes.io/target: "10.1.2.4"
+    external-dns.kubernetes.io/ttl: "120"
+    external-dns.kubernetes.io/cloudflare-proxied: "false"
+spec:
+  # DNS declaration only; actual HTTPS listener is the host-network Traefik.
+  clusterIP: None
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
