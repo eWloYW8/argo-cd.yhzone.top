@@ -32,6 +32,8 @@ spec:
           value: 101.37.69.162
         - name: IPV4_NODE
           value: ali-sas
+        - name: LEGACY_ADDRESS
+          value: 10.1.2.4
         - name: PYTHONDONTWRITEBYTECODE
           value: '1'
         resources:

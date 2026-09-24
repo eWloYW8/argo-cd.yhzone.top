@@ -18,6 +18,7 @@ MANAGER = 'public-network-controller'
 NS = os.getenv('NAMESPACE', 'public-network')
 IPV4 = os.getenv('PUBLIC_IPV4', '101.37.69.162')
 IPV4_NODE = os.getenv('IPV4_NODE', 'ali-sas')
+LEGACY_ADDRESS = str(ipaddress.IPv4Address(os.getenv('LEGACY_ADDRESS', '10.1.2.4')))
 HOST_RE = re.compile(r'^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.yhzone\.top$')
 
 
@@ -118,7 +119,7 @@ def haproxy_config(hosts):
                       '  use_backend kubernetes if kubernetes_public'])
     lines.extend(['  default_backend legacy', 'backend kubernetes',
                   '  server local 127.0.0.1:20444 send-proxy-v2',
-                  'backend legacy', '  server legacy 127.0.0.1:21443'])
+                  'backend legacy', f'  server legacy {LEGACY_ADDRESS}:21443'])
     return '\n'.join(lines) + '\n'
 
 

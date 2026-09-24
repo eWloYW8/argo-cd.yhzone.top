@@ -43,6 +43,11 @@ class Reconciliation(unittest.TestCase):
     def test_missing_backend_and_duplicate_host(self):
         self.svc=[];self.assertEqual(self.records(),[])
         self.setUp();self.ing.append(copy.deepcopy(self.ing[0]));self.assertEqual(self.records(),[])
+    def test_legacy_uses_easytier_without_frp(self):
+        text=c.haproxy_config(['app.yhzone.top'])
+        self.assertIn('server legacy 10.1.2.4:21443',text)
+        self.assertNotIn('server legacy 127.0.0.1:21443',text)
+        self.assertIn('server local 127.0.0.1:20444 send-proxy-v2',text)
     def test_sni_private_block_precedes_legacy(self):
         text=c.haproxy_config(['app.yhzone.top'])
         self.assertLess(text.index('content reject'),text.index('default_backend legacy'))

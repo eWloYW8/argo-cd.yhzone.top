@@ -8,9 +8,9 @@
 
 公网入口是 `traefik-public` DaemonSet，每个已登记入口节点上包含 HAProxy SNI 分流与 Traefik。Traefik 只监听 loopback `20444`，健康检查 `18081`；HAProxy 对外监听 TCP `20443`。只有 `IngressClass=traefik-public` 且带 `networking.yhzone.top/exposure: public` 标签的路由会接入公网。内网域名在 SNI 层直接拒绝。
 
-旧服务继续走 `20443`：没有匹配 Kubernetes 公网路由的连接转交本机 `21443`；ali-sas 上为 FRPS 的旧 Caddy 转发，首节点上为 Docker Caddy。旧 Caddy/FRPC 配置已移到 21443，云网卡 eth0 上的 21443 由 systemd 防火墙规则禁止直接访问，见 `bootstrap/public-edge/legacy-firewall.service`。这一步是一次性主机迁移；新增 Kubernetes 服务不再编辑 Caddyfile 或 FRP。
+旧服务继续走 `20443`：没有匹配 Kubernetes 公网路由的连接，由 Kubernetes HAProxy 经 EasyTier 直连首节点 Caddy `10.1.2.4:21443`。目标通过控制器 `LEGACY_ADDRESS` 配置，由 Argo CD 管理；公网 IPv4 不再经过 FRPC/FRPS 的 TCP 转发。TLS 在原 Caddy 终止，原域名、证书、Basic Auth 和 WebSocket 路径保留。云网卡 eth0 上的 21443 仍由 systemd 防火墙规则禁止直接访问，见 `bootstrap/public-edge/legacy-firewall.service`。新增 Kubernetes 服务继续使用公网 Ingress。
 
-PROXY v2 仅用于本机 SNI edge → 公网 Traefik，Traefik 只信任 loopback 来源；公网 Kubernetes 服务可获得原客户端地址。旧 FRP 链路保持原有客户端地址行为。公网入口目前为 TCP HTTPS，不提供 HTTP/3。
+PROXY v2 仅用于本机 SNI edge → 公网 Traefik，Traefik 只信任 loopback 来源；公网 Kubernetes 服务可获得原客户端地址。旧 Caddy 路径不发送 PROXY protocol，Caddy 看到入口节点的来源地址；新公网 Ingress 的客户端地址行为不变。公网入口目前为 TCP HTTPS，不提供 HTTP/3。
 
 ## 手工登记节点 IPv6
 
