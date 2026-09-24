@@ -5,6 +5,7 @@ resources:
 - database.yaml
 - database-service.yaml
 - cache-job.yaml
+- ingress.yaml
 configMapGenerator:
 - name: harbor-cache-scripts
   files:

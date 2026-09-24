@@ -11,6 +11,7 @@ spec:
   - https://helm.goharbor.io
   - https://kubernetes-sigs.github.io/headlamp/
   - https://kubernetes-sigs.github.io/external-dns/
+  - https://traefik.github.io/charts
   destinations:
   - server: https://kubernetes.default.svc
     namespace: '*'
