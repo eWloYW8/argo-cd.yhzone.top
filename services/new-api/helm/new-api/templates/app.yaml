@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      automountServiceAccountToken: false
+      shareProcessNamespace: true
+      terminationGracePeriodSeconds: 60
+      nodeSelector:
+        kubernetes.io/hostname: yihao-pve-debian
+        kubernetes.io/arch: amd64
+      imagePullSecrets:
+      - name: harbor-pull
+      securityContext:
+        runAsUser: {{ .Values.uid }}
+        runAsGroup: {{ .Values.uid }}
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: app
+        image: {{ .Values.image | quote }}
+        {{- if .Values.runtimeEnv }}
+        envFrom:
+        - secretRef:
+            name: runtime-env
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.port }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
+          capabilities:
+            drop: [ALL]
+            # Preserve write access to original mixed-owner data and logs.
+            add: [DAC_OVERRIDE]
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.healthPath | quote }}
+            port: http
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.healthPath | quote }}
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.healthPath | quote }}
+            port: http
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 5
+        volumeMounts:
+        {{- range .Values.mounts }}
+        - name: data
+          subPath: {{ .subPath }}
+          mountPath: {{ .mountPath }}
+          readOnly: {{ .readOnly }}
+        {{- end }}
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-data
+      - name: tmp
+        emptyDir:
+          sizeLimit: 2Gi

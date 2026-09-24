@@ -1,0 +1,39 @@
+image: new-api/app@sha256:dc61e20cb85d5f5e9d94062cb18be863cdef8faea61509461296cd30aa651575
+replicas: 0
+publishDNS: false
+runtimeEnv: true
+uid: 0
+readOnlyRootFilesystem: false
+port: 3000
+healthPath: /api/status
+storageSize: 5Gi
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 1Gi
+mounts:
+- subPath: data
+  mountPath: /data
+  readOnly: false
+- subPath: logs
+  mountPath: /app/logs
+  readOnly: false
+hosts:
+  internal: newapi.k8s.yhzone.top
+  public: newapi.yhzone.top
+publicBasicAuth:
+  enabled: false
+backendReplicas: 0
+backends:
+  postgres:
+    image: new-api/postgres@sha256:45e24a31a2752f46865cfc45a8bc8220e60cac0008f32eb219ec308bc491e681
+    port: 5432
+    storage: 10Gi
+    memory: 512Mi
+  redis:
+    image: new-api/redis@sha256:b8214b71db9d569fa98cc7f5df10f9b6f26e73eb9f4697738c799c5ba602ac81
+    port: 6379
+    storage: 1Gi
+    memory: 256Mi

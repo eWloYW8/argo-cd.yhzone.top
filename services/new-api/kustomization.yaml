@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: new-api
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: new-api
+  version: 0.1.0
+  releaseName: new-api
+  namespace: new-api
+  valuesFile: values/new-api-0.1.0.yaml
+components:
+- ../../components/image-prefix

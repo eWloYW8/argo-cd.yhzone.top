@@ -1,0 +1,100 @@
+{{- range $name, $backend := .Values.backends }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $name }}-data
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: yihao-local
+  resources:
+    requests:
+      storage: {{ $backend.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+spec:
+  selector:
+    app.kubernetes.io/name: new-api-{{ $name }}
+  ports:
+  - name: service
+    port: {{ $backend.port }}
+    targetPort: {{ $backend.port }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+spec:
+  replicas: {{ $.Values.backendReplicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: new-api-{{ $name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: new-api-{{ $name }}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 90
+      nodeSelector:
+        kubernetes.io/hostname: yihao-pve-debian
+        kubernetes.io/arch: amd64
+      imagePullSecrets:
+      - name: harbor-pull
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: {{ $name }}
+        image: {{ $backend.image | quote }}
+        envFrom:
+        - secretRef:
+            name: {{ $name }}-env
+        {{- if eq $name "redis" }}
+        command: [/bin/sh, -ec]
+        args:
+        - 'exec redis-server --requirepass "$REDIS_PASSWORD" --dir /data --dbfilename dump.rdb'
+        {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: {{ $backend.memory }}
+        startupProbe:
+          tcpSocket:
+            port: {{ $backend.port }}
+          failureThreshold: 60
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -ec
+            {{- if eq $name "postgres" }}
+            - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+            {{- else }}
+            - 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli ping | grep -q PONG'
+            {{- end }}
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - name: data
+          subPath: data
+          mountPath: {{ if eq $name "postgres" }}/var/lib/postgresql/data{{ else }}/data{{ end }}
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ $name }}-data
+{{- end }}
