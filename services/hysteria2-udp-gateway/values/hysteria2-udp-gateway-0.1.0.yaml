@@ -1,7 +1,7 @@
 image: docker.io/traefik:v3.7.13
 nodeName: ali-sas
 replicas: 1
-listenPort: 31443
+listenPort: 30443
 sessionTimeout: 120s
 backend: hysteria2-udp.hysteria2.svc.cluster.local:30443
 resources:
