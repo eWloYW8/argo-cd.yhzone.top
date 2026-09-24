@@ -19,6 +19,10 @@ services/
   zju-autosign/            # 本地 Helm Chart + 后台签到轮询
   neverrun/                # 本地 Helm Chart + 内外网入口
   hysteria2/               # UDP 30443 + cert-manager 证书
+  subcon/                  # 订阅转换与持久化配置
+  ascend-compiler-explorer/ # CANN 编译工具链与持久化缓存
+  funasr-nano/              # CPU 语音识别与模型 PVC
+  zhiyun-tools/             # 智云工具、SQLite 与加密密钥 PVC
 clusters/yihao/             # 根 Application、ApplicationSet
 bootstrap/                 # K3s、LXC、宿主机引导
 docs/                      # 访问、恢复等运维说明
@@ -86,3 +90,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 后台签到程序 [ZJU-Autosign](services/zju-autosign/README.md) 以单副本运行，无网页或公网入口，凭据由 Secret 提供。
 
 [NeverRun](services/neverrun/README.md) 公网入口为 `https://neverrun.yhzone.top:20443`（原 Basic Auth），内网为 `https://neverrun.k8s.yhzone.top`。旧 `.d.yhzone.top` 入口已移除。[Hysteria2](services/hysteria2/README.md) 保留 UDP 30443、原密码和 FRP IPv4 转发，证书由 cert-manager 自动管理。
+
+Subcon、Ascend Compiler Explorer、FunASR Nano、ZhiyunTools 已迁移至独立 Helm 服务目录，公网域名分别为 `subcon.yhzone.top`、`ascendc.yhzone.top`、`funasr.yhzone.top`、`zhiyun.yhzone.top`，端口均为 `20443`。旧 `.d.yhzone.top` 入口已移除。迁移备份与校验清单位于 `~/k8s/storage/backups/migration-20260924/`；各服务 README 记录数据布局与恢复步骤。

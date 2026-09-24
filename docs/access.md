@@ -80,3 +80,16 @@ ZJULibBooking 的公网域名 `zjulib.yhzone.top` 需 Basic Auth，用户名为 
 NeverRun 公网入口 `https://neverrun.yhzone.top:20443`，沿用原 NeverRun Caddy 站点的 Basic Auth，凭据保存在 `neverrun/public-basic-auth`。旧 `neverrun.d.yhzone.top:20443` 入口已移除。内网入口不加 Basic Auth。
 
 Hysteria2 为 UDP 服务，继续使用 30443 端口、既有域名和密码，IPv4 仍经 ali-sas 的 FRP 链路，IPv6 可直连首节点。其 `hysteria2/hysteria2-tls` Certificate 通过 Cloudflare DNS01 签发 `*.yhzone.top`，Secret 整目录挂载支持续期投射，Hysteria 在新 TLS 握手时读取证书。无需修改现有客户端配置。
+
+## 新迁移的四个服务
+
+| 服务 | 公网入口 | 内网入口 | 认证 |
+| --- | --- | --- | --- |
+| Subcon | https://subcon.yhzone.top:20443 | https://subcon.k8s.yhzone.top | 原 API token |
+| Ascend Compiler Explorer | https://ascendc.yhzone.top:20443 | https://ascendc.k8s.yhzone.top | 沿用原配置 |
+| FunASR Nano | https://funasr.yhzone.top:20443/health | https://funasr.k8s.yhzone.top/health | 实时接口使用原 Bearer API key |
+| ZhiyunTools | https://zhiyun.yhzone.top:20443 | https://zhiyun.k8s.yhzone.top | 公网沿用原 Basic Auth |
+
+FunASR 实时接口为 `wss://funasr.yhzone.top:20443/v1/realtime`。ZhiyunTools 通过集群 Service 访问 FunASR，不依赖公网绕行。四个旧 `.d.yhzone.top` 入口已移除；共享泛解析仍用于其他旧服务，旧域名可能返回网关默认响应。原订阅/API 客户端需要改用新地址；浏览器原站点数据不会自动复制到新域名。
+
+持久数据均使用 `yihao-local` PVC，保存在 `~/k8s/storage/pvc/`。迁移前停写备份、原 Compose 配置及逐文件校验记录保存在 `~/k8s/storage/backups/migration-20260924/`（含敏感数据，不进入 Git）。原 Docker 数据与容器保留用于恢复。备份目前与业务数据同机。
