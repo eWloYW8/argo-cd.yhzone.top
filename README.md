@@ -8,6 +8,7 @@ K3s / EasyTier 私有集群，默认 context 为 `yihao`。首节点 `yihao-pve-
 services/
   argocd/                  # Argo CD 自管理与项目权限
   cert-manager/            # Helm + Cloudflare ACME 签发器
+  external-dns/            # Helm + Cloudflare DNS 自动管理
   harbor/                  # Helm + PostgreSQL + 缓存初始化任务
   headlamp/                # Helm + 登录 RBAC
   caddy/                   # 内网 HTTPS 入口与证书
@@ -62,3 +63,5 @@ PVC 数据位于 `~/k8s/storage/pvc`，etcd 快照位于 `~/k8s/storage/etcd-sna
 新增节点需固定 EasyTier IP，检查与 Pod `10.42.0.0/16`、Service `10.43.0.0/16` 的网段冲突；不要复制首节点 cluster-init 配置。本地持久卷只放在首节点。
 
 LXC 的 `/dev/kmsg` 使用 console 兼容链接，内核 OOM 观测存在限制；NetworkManager 排除 CNI 接口的配置位于 `bootstrap/k3s/`。
+
+DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/README.md)。

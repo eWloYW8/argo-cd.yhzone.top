@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor
+  annotations:
+    dns.yhzone.top/managed: 'true'
+    external-dns.kubernetes.io/hostname: harbor.yhzone.top
+    external-dns.kubernetes.io/target: 10.1.2.4
+    external-dns.kubernetes.io/ttl: '300'
+    external-dns.kubernetes.io/cloudflare-proxied: 'false'
+  namespace: harbor

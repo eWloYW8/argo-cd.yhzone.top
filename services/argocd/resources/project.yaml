@@ -10,6 +10,7 @@ spec:
   - https://charts.jetstack.io
   - https://helm.goharbor.io
   - https://kubernetes-sigs.github.io/headlamp/
+  - https://kubernetes-sigs.github.io/external-dns/
   destinations:
   - server: https://kubernetes.default.svc
     namespace: '*'

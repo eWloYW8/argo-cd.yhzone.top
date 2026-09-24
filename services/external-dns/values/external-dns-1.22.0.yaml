@@ -1,0 +1,178 @@
+global:
+  imagePullSecrets: []
+image:
+  repository: registry.k8s.io/external-dns/external-dns
+  tag: null
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+nameOverride: null
+fullnameOverride: null
+namespaceOverride: null
+commonLabels: {}
+serviceAccount:
+  create: true
+  labels: {}
+  annotations: {}
+  name: null
+  automountServiceAccountToken: true
+service:
+  annotations: {}
+  port: 7979
+  ipFamilies: []
+  ipFamilyPolicy: null
+  enabled: true
+rbac:
+  create: true
+  additionalPermissions: []
+replicaCount: 1
+deploymentAnnotations: {}
+extraContainers: []
+deploymentStrategy:
+  type: Recreate
+revisionHistoryLimit: null
+podLabels: {}
+podAnnotations: {}
+automountServiceAccountToken: true
+shareProcessNamespace: false
+podSecurityContext:
+  runAsNonRoot: true
+  fsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
+priorityClassName: null
+terminationGracePeriodSeconds: null
+dnsPolicy: null
+dnsConfig: null
+hostAliases: []
+initContainers: []
+securityContext:
+  privileged: false
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  capabilities:
+    drop:
+    - ALL
+env:
+- name: CF_API_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token
+      key: api-token
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 2
+  successThreshold: 1
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+extraVolumes: []
+extraVolumeMounts: []
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+nodeSelector: {}
+affinity: {}
+topologySpreadConstraints: []
+tolerations: []
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+  annotations: {}
+  namespace: null
+  interval: null
+  scrapeTimeout: null
+  scheme: null
+  tlsConfig: {}
+  bearerTokenFile: null
+  relabelings: []
+  metricRelabelings: []
+  targetLabels: []
+logLevel: info
+logFormat: text
+interval: 1m
+triggerLoopOnEvent: true
+namespaced: false
+enableGatewayListenerSets: false
+gatewayNamespace: null
+sourceNamespace: null
+sources:
+- service
+- ingress
+policy: sync
+registry: txt
+txtOwnerId: yihao
+txtPrefix: _external-dns.
+txtSuffix: null
+domainFilters:
+- k8s.yhzone.top
+- harbor.yhzone.top
+excludeDomains: []
+labelFilter: null
+annotationFilter: dns.yhzone.top/managed=true
+annotationPrefix: null
+managedRecordTypes: []
+provider:
+  name: cloudflare
+  webhook:
+    image:
+      repository: null
+      tag: null
+      pullPolicy: IfNotPresent
+    env: []
+    args: []
+    extraVolumeMounts: []
+    resources: {}
+    securityContext: {}
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http-webhook
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 2
+      successThreshold: 1
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: http-webhook
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    service:
+      port: 8080
+    serviceMonitor:
+      interval: null
+      scheme: null
+      tlsConfig: {}
+      bearerTokenFile: null
+      scrapeTimeout: null
+      metricRelabelings: []
+      relabelings: []
+extraArgs:
+  zone-id-filter: 53eb6638f903fc000263a12cbdc315c6
+secretConfiguration:
+  enabled: false
+  mountPath: null
+  subPath: null
+  data: {}
+enabled: null

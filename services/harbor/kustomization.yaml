@@ -11,3 +11,5 @@ helmCharts:
   namespace: harbor
   includeCRDs: true
   valuesFile: values/harbor-1.19.2.yaml
+patches:
+- path: patches/dns.yaml
