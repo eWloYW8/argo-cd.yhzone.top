@@ -99,3 +99,9 @@ FunASR 实时接口为 `wss://funasr.yhzone.top:20443/v1/realtime`。ZhiyunTools
 New API 已迁移到 Kubernetes，原入口 **https://newapi.d.yhzone.top:20443** 保留；新增 https://newapi.yhzone.top:20443 和内网 https://newapi.k8s.yhzone.top。原认证、账号、API key、数据库及日志保留，旧入口经现有 Caddy 转接 Kubernetes。数据核验、备份和回退方法见 [New API](../services/new-api/README.md)。
 
 Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kubernetes。容器自动重启已关闭，Compose 使用 `disabled-manual-start` profile。原数据保留；逻辑备份、冷备份及校验清单位于 `~/k8s/storage/backups/sub2api-disabled-20260924/`。其旧入口当前不提供服务，不能把停止状态误认为已迁移。
+
+## Vaultwarden
+
+已迁移到 Kubernetes，保留 https://keys.yhzone.top:20443 和 https://keys.poc.pub:20443，经原 Caddy 入口转发至 Kubernetes。原账号、认证配置和客户端服务器地址保持不变。新增 https://vaultwarden.yhzone.top:20443 与内网 https://vaultwarden.k8s.yhzone.top。
+
+完整数据冷备份位于 `~/k8s/storage/backups/vaultwarden-migration-20260924/`，原 Docker 数据保留、自动重启关闭。SQLite、配置和签名密钥已校验；详细存储和回退方法见 [Vaultwarden](../services/vaultwarden/README.md)。
