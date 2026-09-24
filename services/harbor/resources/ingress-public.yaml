@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-public
+  namespace: harbor
+  annotations:
+    traefik.ingress.kubernetes.io/service.nativelb: 'true'
+spec:
+  type: ClusterIP
+  trafficDistribution: PreferSameNode
+  selector:
+    app: harbor
+    component: nginx
+    release: harbor
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: harbor-public
+  namespace: harbor
+  labels:
+    networking.yhzone.top/exposure: public
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    networking.yhzone.top/publish-dns: 'false'
+spec:
+  ingressClassName: traefik-public
+  tls:
+  - hosts:
+    - harbor.yhzone.top
+    secretName: harbor-public-tls
+  rules:
+  - host: harbor.yhzone.top
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: harbor-public
+            port:
+              number: 80
