@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: ascend-compiler-explorer
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: ascend-compiler-explorer
+  version: 0.1.0
+  releaseName: ascend-compiler-explorer
+  namespace: ascend-compiler-explorer
+  valuesFile: values/ascend-compiler-explorer-0.1.0.yaml
+components:
+- ../../components/image-prefix

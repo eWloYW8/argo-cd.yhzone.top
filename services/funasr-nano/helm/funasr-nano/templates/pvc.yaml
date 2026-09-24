@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-data
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: yihao-local
+  resources:
+    requests:
+      storage: {{ .Values.storageSize }}

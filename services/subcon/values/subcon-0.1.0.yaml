@@ -1,0 +1,31 @@
+image: subcon/app@sha256:82403f2c5ba2cab4aa50b0d9fbcab35eda07368817b8178d32a7252c51804df2
+replicas: 0
+publishDNS: false
+runtimeEnv: false
+port: 25500
+healthPath: /
+uid: 0
+readOnlyRootFilesystem: false
+storageSize: 1Gi
+resources:
+  requests:
+    cpu: 20m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+mounts:
+- subPath: conf
+  mountPath: /app/conf
+  readOnly: false
+- subPath: schema/ssh.yaml
+  mountPath: /app/schema/ssh.yaml
+  readOnly: true
+- subPath: schema/vmess.yaml
+  mountPath: /app/schema/vmess.yaml
+  readOnly: true
+hosts:
+  internal: subcon.k8s.yhzone.top
+  public: subcon.yhzone.top
+publicBasicAuth:
+  enabled: false
+  secretName: public-basic-auth

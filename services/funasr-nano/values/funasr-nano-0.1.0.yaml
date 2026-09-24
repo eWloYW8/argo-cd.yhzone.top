@@ -1,0 +1,25 @@
+image: funasr-nano/app@sha256:7e88e2e7211c8ac408ddb6ff962ec2506a2e3577c3440a61090b672eb63ff41f
+replicas: 0
+publishDNS: false
+runtimeEnv: true
+port: 10095
+healthPath: /health
+uid: 10001
+readOnlyRootFilesystem: true
+storageSize: 4Gi
+resources:
+  requests:
+    cpu: 500m
+    memory: 768Mi
+  limits:
+    memory: 3Gi
+mounts:
+- subPath: models
+  mountPath: /models
+  readOnly: true
+hosts:
+  internal: funasr.k8s.yhzone.top
+  public: funasr.yhzone.top
+publicBasicAuth:
+  enabled: false
+  secretName: public-basic-auth

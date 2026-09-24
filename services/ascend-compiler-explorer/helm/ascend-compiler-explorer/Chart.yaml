@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ascend-compiler-explorer
+description: Migrated ascend-compiler-explorer application with retained local storage
+type: application
+version: 0.1.0
+appVersion: migration-20260924

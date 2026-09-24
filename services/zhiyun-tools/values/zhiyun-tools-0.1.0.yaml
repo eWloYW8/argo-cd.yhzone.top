@@ -1,0 +1,25 @@
+image: zhiyun-tools/app@sha256:70e3fd7cfbfcf0efbf3c75aa56f52416803e6214a26fb1ba8a6340226708c1c1
+replicas: 0
+publishDNS: false
+runtimeEnv: true
+port: 3000
+healthPath: /api/health
+uid: 10001
+readOnlyRootFilesystem: false
+storageSize: 10Gi
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 1Gi
+mounts:
+- subPath: data
+  mountPath: /app/data
+  readOnly: false
+hosts:
+  internal: zhiyun.k8s.yhzone.top
+  public: zhiyun.yhzone.top
+publicBasicAuth:
+  enabled: true
+  secretName: public-basic-auth

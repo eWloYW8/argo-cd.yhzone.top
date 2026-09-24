@@ -1,0 +1,28 @@
+image: ascend-compiler-explorer/app:migrate-20260924
+replicas: 0
+publishDNS: false
+runtimeEnv: false
+port: 10240
+healthPath: /api/compilers/c++
+uid: 0
+readOnlyRootFilesystem: false
+storageSize: 10Gi
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    memory: 3Gi
+mounts:
+- subPath: storage
+  mountPath: /opt/compiler-explorer/lib/storage/data
+  readOnly: false
+- subPath: compiler-cache
+  mountPath: /opt/compiler-explorer/out/compiler-cache
+  readOnly: false
+hosts:
+  internal: ascendc.k8s.yhzone.top
+  public: ascendc.yhzone.top
+publicBasicAuth:
+  enabled: false
+  secretName: public-basic-auth
