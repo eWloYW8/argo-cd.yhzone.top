@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shell-nginx
+data:
+  nginx.conf: |
+    worker_processes 1;
+    pid /tmp/nginx.pid;
+    error_log /dev/stderr warn;
+    events { worker_connections 1024; }
+    http {
+      include /etc/nginx/mime.types;
+      default_type application/octet-stream;
+      access_log off;
+      sendfile on;
+      tcp_nopush on;
+      client_body_temp_path /tmp/client_temp;
+      proxy_temp_path /tmp/proxy_temp;
+      fastcgi_temp_path /tmp/fastcgi_temp;
+      uwsgi_temp_path /tmp/uwsgi_temp;
+      scgi_temp_path /tmp/scgi_temp;
+      server {
+        listen 8080;
+        server_name _;
+        root /srv/files;
+        index index.html;
+        absolute_redirect off;
+        autoindex off;
+        location / { try_files $uri $uri/ =404; }
+      }
+      server {
+        listen 8081;
+        location = /healthz { return 200 'ok'; }
+        location / { return 404; }
+      }
+    }

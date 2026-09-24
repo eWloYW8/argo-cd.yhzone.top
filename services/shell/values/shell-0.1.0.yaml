@@ -1,0 +1,8 @@
+image: docker.io/library/nginx@sha256:bf3201ab56f23e5954646379c775d511fc466e9f11376d9725361064ad07ed35
+node: yihao-pve-debian
+storagePath: /home/yihao/k8s/storage/shell
+storageSize: 5Gi
+publicIngress:
+  host: shell.yhzone.top
+  expose: false
+  publishDNS: false
