@@ -1,6 +1,6 @@
-image: ascend-compiler-explorer/app:migrate-20260924
-replicas: 0
-publishDNS: false
+image: ascend-compiler-explorer/app@sha256:acf22f9b014679c8ab68b56b7c9c1823d943dce8de5ccba5483c2bd48b3c7c7b
+replicas: 1
+publishDNS: true
 runtimeEnv: false
 port: 10240
 healthPath: /api/compilers/c++

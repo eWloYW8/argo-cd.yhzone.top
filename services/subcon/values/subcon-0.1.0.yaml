@@ -1,6 +1,6 @@
 image: subcon/app@sha256:82403f2c5ba2cab4aa50b0d9fbcab35eda07368817b8178d32a7252c51804df2
-replicas: 0
-publishDNS: false
+replicas: 1
+publishDNS: true
 runtimeEnv: false
 port: 25500
 healthPath: /

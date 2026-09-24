@@ -1,6 +1,6 @@
 image: zhiyun-tools/app@sha256:70e3fd7cfbfcf0efbf3c75aa56f52416803e6214a26fb1ba8a6340226708c1c1
-replicas: 0
-publishDNS: false
+replicas: 1
+publishDNS: true
 runtimeEnv: true
 port: 3000
 healthPath: /api/health
