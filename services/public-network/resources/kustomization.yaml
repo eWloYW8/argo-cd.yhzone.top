@@ -4,6 +4,7 @@ resources:
 - namespace.yaml
 - nodepublicipv6-crd.yaml
 - yihao-pve-debian-ipv6.yaml
+- n100-ipv6.yaml
 - rbac.yaml
 - controller.yaml
 configMapGenerator:

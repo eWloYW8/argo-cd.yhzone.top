@@ -121,10 +121,27 @@ metadata:
   name: local-path-config
   namespace: local-path-storage
 data:
-  config.json: "{\n  \"nodePathMap\": [\n    {\n      \"node\": \"DEFAULT_PATH_FOR_NON_LISTED_NODES\"\
-    ,\n      \"paths\": []\n    },\n    {\n      \"node\": \"yihao-pve-debian\",\n\
-    \      \"paths\": [\n        \"/home/yihao/k8s/storage/pvc\"\n      ]\n    }\n\
-    \  ]\n}"
+  config.json: |
+    {
+      "nodePathMap": [
+        {
+          "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
+          "paths": []
+        },
+        {
+          "node": "yihao-pve-debian",
+          "paths": [
+            "/home/yihao/k8s/storage/pvc"
+          ]
+        },
+        {
+          "node": "n100",
+          "paths": [
+            "/home/yihao/k8s/storage/pvc"
+          ]
+        }
+      ]
+    }
   setup: '#!/bin/sh
 
     set -eu

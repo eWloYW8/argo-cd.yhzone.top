@@ -1,0 +1,7 @@
+apiVersion: networking.yhzone.top/v1alpha1
+kind: NodePublicIPv6
+metadata:
+  name: n100
+spec:
+  address: 2001:da8:e000:731a:2e0:b4ff:fe66:d452
+  enabled: true

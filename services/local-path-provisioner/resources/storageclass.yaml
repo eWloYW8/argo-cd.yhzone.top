@@ -13,3 +13,18 @@ allowedTopologies:
         values:
           - yihao-pve-debian
 volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: n100-local
+  annotations:
+    defaultVolumeType: local
+provisioner: rancher.io/local-path
+reclaimPolicy: Retain
+allowedTopologies:
+- matchLabelExpressions:
+  - key: kubernetes.io/hostname
+    values:
+    - n100
+volumeBindingMode: WaitForFirstConsumer
