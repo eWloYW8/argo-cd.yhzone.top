@@ -19,7 +19,7 @@ NS = os.getenv('NAMESPACE', 'public-network')
 IPV4 = os.getenv('PUBLIC_IPV4', '101.37.69.162')
 IPV4_NODE = os.getenv('IPV4_NODE', 'ali-sas')
 LEGACY_ADDRESS = str(ipaddress.IPv4Address(os.getenv('LEGACY_ADDRESS', '10.1.2.4')))
-HOST_RE = re.compile(r'^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.yhzone\.top$')
+HOST_RE = re.compile(r'^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.d)?\.yhzone\.top$')
 
 
 def ready(obj):
@@ -113,6 +113,7 @@ def haproxy_config(hosts):
              'frontend tls', '  bind ":::${PUBLIC_PORT}" v4v6',
              '  tcp-request inspect-delay 5s',
              r'  tcp-request content reject if { req.ssl_sni -m reg -i \.k8s\.yhzone\.top\.?$ }',
+             '  tcp-request content reject if { req.ssl_sni -i keys.poc.pub }',
              '  tcp-request content accept if { req.ssl_hello_type 1 }']
     if hosts:
         lines.extend(['  acl kubernetes_public req.ssl_sni -i ' + ' '.join(hosts),

@@ -43,6 +43,22 @@ class Reconciliation(unittest.TestCase):
     def test_missing_backend_and_duplicate_host(self):
         self.svc=[];self.assertEqual(self.records(),[])
         self.setUp();self.ing.append(copy.deepcopy(self.ing[0]));self.assertEqual(self.records(),[])
+    def test_preserved_nested_domain_allowed_but_private_domains_excluded(self):
+        for host in ['newapi.d.yhzone.top', 'keys.yhzone.top']:
+            self.assertIsNotNone(c.HOST_RE.fullmatch(host))
+        for host in ['headlamp.k8s.yhzone.top', 'a.b.yhzone.top', 'keys.poc.pub']:
+            self.assertIsNone(c.HOST_RE.fullmatch(host))
+        host='newapi.d.yhzone.top'
+        self.ing[0]['spec']['rules'][0]['host']=host
+        self.ing[0]['spec']['tls'][0]['hosts']=[host]
+        self.certs[0]['spec']['dnsNames']=[host]
+        addresses=c.authorized_addresses(self.resources,self.nodes)
+        domains,routes=c.calculate(self.ing,self.svc,self.slices,self.nodes,addresses,{'ali-sas','worker'},self.certs)
+        self.assertEqual([r['recordType'] for r in domains[host]],['A','AAAA'])
+        self.assertIn(host,routes)
+    def test_removed_alias_rejected_before_legacy(self):
+        text=c.haproxy_config(['keys.yhzone.top'])
+        self.assertLess(text.index('content reject if { req.ssl_sni -i keys.poc.pub }'),text.index('default_backend legacy'))
     def test_legacy_uses_easytier_without_frp(self):
         text=c.haproxy_config(['app.yhzone.top'])
         self.assertIn('server legacy 10.1.2.4:21443',text)
