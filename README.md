@@ -69,3 +69,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 新增 HTTP 服务使用各自目录中的 Ingress，自动完成路由、证书及 DNS 配置，见 [入口说明](services/traefik/README.md)。
 
 普通服务默认采用 [Harbor 镜像前缀](services/harbor/README.md)，通过共享 Kustomize component 管理；基础启动组件保留直连上游。Argo CD 访问地址为 `https://argo-cd.k8s.yhzone.top`。
+
+第二个节点 `ali-sas`（EasyTier `10.1.2.2`）作为 worker 加入，部署与资源限制见 [节点说明](bootstrap/nodes/ali-sas/README.md)。
