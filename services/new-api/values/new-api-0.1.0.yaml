@@ -37,3 +37,7 @@ backends:
     port: 6379
     storage: 1Gi
     memory: 256Mi
+legacyIngress:
+  host: newapi.d.yhzone.top
+  expose: false
+  publishDNS: false

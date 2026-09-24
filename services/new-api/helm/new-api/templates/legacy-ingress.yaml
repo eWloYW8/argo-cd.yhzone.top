@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-legacy
+  {{- if .Values.legacyIngress.expose }}
+  labels:
+    networking.yhzone.top/exposure: public
+  {{- end }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    networking.yhzone.top/publish-dns: {{ .Values.legacyIngress.publishDNS | quote }}
+spec:
+  ingressClassName: traefik-public
+  tls:
+  - hosts: [{{ .Values.legacyIngress.host | quote }}]
+    secretName: {{ .Release.Name }}-legacy-tls
+  rules:
+  - host: {{ .Values.legacyIngress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-public
+            port:
+              number: 80

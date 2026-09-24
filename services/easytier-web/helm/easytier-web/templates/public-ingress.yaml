@@ -1,0 +1,60 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: easytier-web-public-auth
+  labels:
+    networking.yhzone.top/exposure: public
+spec:
+  basicAuth:
+    secret: public-basic-auth
+    realm: restricted
+    removeHeader: true
+{{- range $name, $route := .Values.publicIngress.routes }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: easytier-{{ $name }}-public
+  annotations:
+    traefik.ingress.kubernetes.io/service.nativelb: 'true'
+spec:
+  trafficDistribution: PreferSameNode
+  selector:
+    app.kubernetes.io/name: easytier-web
+  ports:
+  - name: http
+    port: {{ $route.port }}
+    targetPort: {{ $route.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: easytier-{{ $name }}-public
+  {{- if $.Values.publicIngress.expose }}
+  labels:
+    networking.yhzone.top/exposure: public
+  {{- end }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    networking.yhzone.top/publish-dns: {{ $.Values.publicIngress.publishDNS | quote }}
+    {{- if $route.basicAuth }}
+    traefik.ingress.kubernetes.io/router.middlewares: easytier-web-easytier-web-public-auth@kubernetescrd
+    {{- end }}
+spec:
+  ingressClassName: traefik-public
+  tls:
+  - hosts: [{{ $route.host | quote }}]
+    secretName: easytier-{{ $name }}-public-tls
+  rules:
+  - host: {{ $route.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: easytier-{{ $name }}-public
+            port:
+              number: {{ $route.port }}
+{{- end }}

@@ -22,3 +22,7 @@ hosts:
   public: vaultwarden.yhzone.top
 publicBasicAuth:
   enabled: false
+legacyIngress:
+  host: keys.yhzone.top
+  expose: false
+  publishDNS: false

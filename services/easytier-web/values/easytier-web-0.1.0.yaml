@@ -16,3 +16,15 @@ mounts:
 - subPath: data
   mountPath: /app/data
   readOnly: false
+publicIngress:
+  expose: false
+  publishDNS: false
+  routes:
+    web:
+      host: easytier.yhzone.top
+      port: 11211
+      basicAuth: true
+    rpc:
+      host: easytier-rpc.yhzone.top
+      port: 22020
+      basicAuth: false
