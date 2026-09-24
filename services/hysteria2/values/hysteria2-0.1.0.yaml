@@ -1,4 +1,3 @@
 image: hysteria2/app@sha256:07a9638b6552fb4fa85a14267589d22eda40aa16aca705e0ed27012edad657d9
 nodeName: yihao-pve-debian
-# Stage certificate issuance before taking the Docker listener's host port.
-replicas: 0
+replicas: 1
