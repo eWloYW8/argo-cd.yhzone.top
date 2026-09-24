@@ -37,12 +37,8 @@ spec:
         ports:
         - name: http
           containerPort: {{ .Values.port }}
-          hostPort: 11211
-          hostIP: 127.0.0.1
         - name: rpc
           containerPort: 22020
-          hostPort: 22020
-          hostIP: 127.0.0.1
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
