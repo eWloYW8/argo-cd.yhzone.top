@@ -6,6 +6,7 @@
 | Argo CD | https://argo-cd.k8s.yhzone.top |
 | Harbor | https://harbor.k8s.yhzone.top |
 | ZJULibBooking | https://zjulib.k8s.yhzone.top |
+| NeverRun | https://neverrun.k8s.yhzone.top |
 
 ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，内网服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网 20443 由独立 SNI/Traefik 入口接管，原 Docker Caddy 与 FRP 移至本机 21443，由 SNI 层转发，原服务外部地址保持 20443。
 
@@ -73,3 +74,9 @@ Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 services/ce
 新公网地址 `https://zjulib.yhzone.top:20443`；原 `https://zjulib.d.yhzone.top:20443` 入口已移除。应用无数据库，任务仅在进程内存中，Pod 重启后需重新提交任务；浏览器 localStorage 不会自动迁移到新域名。镜像使用私有 Harbor 项目和独立只读 robot Secret，恢复集群时还需恢复 `zjulibbooking/harbor-pull`。
 
 ZJULibBooking 的公网域名 `zjulib.yhzone.top` 需 Basic Auth，用户名为 `yihao`，密码使用用户指定值，仅保存 bcrypt 哈希。内网域名不增加此认证；Harbor 沿用原生认证。
+
+## NeverRun 和 Hysteria2
+
+NeverRun 公网入口 `https://neverrun.yhzone.top:20443`，沿用原 NeverRun Caddy 站点的 Basic Auth，凭据保存在 `neverrun/public-basic-auth`。旧 `neverrun.d.yhzone.top:20443` 入口已移除。内网入口不加 Basic Auth。
+
+Hysteria2 为 UDP 服务，继续使用 30443 端口、既有域名和密码，IPv4 仍经 ali-sas 的 FRP 链路，IPv6 可直连首节点。其 `hysteria2/hysteria2-tls` Certificate 通过 Cloudflare DNS01 签发 `*.yhzone.top`，Secret 整目录挂载支持续期投射，Hysteria 在新 TLS 握手时读取证书。无需修改现有客户端配置。

@@ -13,3 +13,7 @@ The original `neverrun-neverrun` image was preserved locally. The migration imag
 Secrets `harbor-pull` and `public-basic-auth` are bootstrapped outside Git. Back up both. The Basic Auth middleware strips the Authorization header before proxying. Internal and public TLS use the Cloudflare DNS01 ClusterIssuer. Public A/AAAA follow the cluster's existing manual NodePublicIPv6 eligibility rules.
 
 Probes use `/openapi.json`, without logging into upstream services or submitting sport records. Validation must not create real sport submissions. The original Docker container is retained stopped, with restart disabled and Compose behind `legacy-rollback`. A rollback must stop the Kubernetes instance before reactivating the original container and restoring its old Caddy site from the private backup.
+
+## Migration validation (2026-09-24)
+
+Argo CD Synced/Healthy, one Ready Pod, both certificates Ready. Internal page and OpenAPI returned 200 with trusted TLS. Public IPv4 and local-node IPv6 rejected missing/invalid Basic Auth with 401; the Secret preserves the original Caddy bcrypt entries. No real login or sport submission was performed. The old Caddy site was removed and Docker stopped; the shared wildcard gateway may still return its generic fallback for the retired hostname. The application no longer contains the plaintext password print statement.

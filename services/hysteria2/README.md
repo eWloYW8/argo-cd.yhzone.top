@@ -26,3 +26,7 @@ kubectl --context yihao -n hysteria2 logs deploy/hysteria2 --tail=20
 A Ready process alone is not an end-to-end UDP health check. Verify authenticated Hysteria client connections with TLS verification and a proxied request. Do not add an HTTP/TCP probe to the UDP listener.
 
 Original host config/certificate backups are private at `~/k8s/.bootstrap/hysteria2/source-before.tar.gz`. The old Docker container and image remain for rollback. After migration it is stopped, restart disabled, and Compose uses the `legacy-rollback` profile. To roll back, pause this Argo application's automated sync, scale the Kubernetes Deployment to zero, wait for UDP 30443 to be released, then restore/start Docker. Never let both listeners compete for the same host port.
+
+## Migration validation (2026-09-24)
+
+Argo CD Synced/Healthy, one Ready Pod; Docker stopped with restart disabled. Authenticated Hysteria clients with normal certificate verification successfully proxied HTTPS through 127.0.0.1:30443, ali-sas public IPv4 101.37.69.162:30443, and the first node global IPv6 address. The IPv6 test originated on the first node; independent external IPv6 ingress was not tested. The mounted certificate matches the cert-manager Secret and is issued by Let's Encrypt. Certificate expiry is 2026-12-23; cert-manager schedules renewal for 2026-11-23.

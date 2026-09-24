@@ -17,6 +17,8 @@ services/
   local-path-provisioner/  # 本地存储
   zjulibbooking/           # 本地 Helm Chart + 图书馆预约服务
   zju-autosign/            # 本地 Helm Chart + 后台签到轮询
+  neverrun/                # 本地 Helm Chart + 内外网入口
+  hysteria2/               # UDP 30443 + cert-manager 证书
 clusters/yihao/             # 根 Application、ApplicationSet
 bootstrap/                 # K3s、LXC、宿主机引导
 docs/                      # 访问、恢复等运维说明
@@ -82,3 +84,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 图书馆预约服务公网地址为 `https://zjulib.yhzone.top:20443`，旧域名入口已移除。镜像、内存任务限制及回退说明见 [ZJULibBooking](services/zjulibbooking/README.md)。
 
 后台签到程序 [ZJU-Autosign](services/zju-autosign/README.md) 以单副本运行，无网页或公网入口，凭据由 Secret 提供。
+
+[NeverRun](services/neverrun/README.md) 公网入口为 `https://neverrun.yhzone.top:20443`（原 Basic Auth），内网为 `https://neverrun.k8s.yhzone.top`。旧 `.d.yhzone.top` 入口已移除。[Hysteria2](services/hysteria2/README.md) 保留 UDP 30443、原密码和 FRP IPv4 转发，证书由 cert-manager 自动管理。
