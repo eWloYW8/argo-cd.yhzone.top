@@ -116,9 +116,9 @@ sources:
 - service
 - ingress
 policy: sync
-registry: txt
-txtOwnerId: yihao
-txtPrefix: _external-dns.
+registry: noop
+txtOwnerId: null
+txtPrefix: null
 txtSuffix: null
 domainFilters:
 - k8s.yhzone.top
