@@ -4,5 +4,5 @@ storagePath: /home/yihao/k8s/storage/shell
 storageSize: 5Gi
 publicIngress:
   host: shell.yhzone.top
-  expose: false
-  publishDNS: false
+  expose: true
+  publishDNS: true
