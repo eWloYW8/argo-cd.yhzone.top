@@ -1,0 +1,149 @@
+# Full defaults from upstream headlamp 0.45.0, with yihao overrides.
+replicaCount: 1
+image:
+  registry: ghcr.io
+  repository: headlamp-k8s/headlamp
+  pullPolicy: IfNotPresent
+  tag: ''
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: headlamp
+namespaceOverride: ''
+initContainers: []
+extraContainers: []
+config:
+  inCluster: true
+  inClusterContextName: yihao
+  baseURL: ''
+  sessionTTL: 86400
+  unsafeUseServiceAccountToken: false
+  serviceAccountTokenPath: ''
+  oidc:
+    secret:
+      create: false
+      name: oidc
+    clientID: ''
+    clientSecret: ''
+    issuerURL: ''
+    scopes: ''
+    callbackURL: ''
+    validatorClientID: ''
+    validatorIssuerURL: ''
+    useAccessToken: false
+    usePKCE: false
+    useCookie: false
+    externalSecret:
+      enabled: false
+      name: ''
+      hasScopes: false
+    meUserInfoURL: ''
+  pluginsDir: /headlamp/plugins
+  staticPlugins:
+    enabled: true
+  enableHelm: false
+  watchPlugins: false
+  podDebugImage: ''
+  nodeShellImage: ''
+  nodeShellNamespace: ''
+  clusterInventory:
+    enabled: false
+    accessProvidersConfig: {}
+    plugins: []
+    labelSelector: '!headlamp.dev/ignore'
+    namespaces: []
+    rootReconcileInterval: ''
+    noCRDCacheTTL: ''
+  extraArgs: []
+automountServiceAccountToken: true
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ''
+clusterRoleBinding:
+  create: false
+  clusterRoleName: cluster-admin
+  annotations: {}
+deploymentAnnotations: {}
+podAnnotations: {}
+podLabels: {}
+hostUsers: true
+podSecurityContext: {}
+securityContext:
+  runAsNonRoot: true
+  privileged: false
+  runAsUser: 100
+  runAsGroup: 101
+service:
+  annotations: {}
+  type: ClusterIP
+  port: 80
+  appProtocol: null
+  clusterIP: ''
+  loadBalancerIP: ''
+  loadBalancerSourceRanges: []
+  nodePort: null
+  extraServicePorts: []
+volumeMounts: []
+volumes: []
+persistentVolumeClaim:
+  enabled: false
+  annotations: {}
+  accessModes: []
+  size: ''
+  storageClassName: ''
+  selector: {}
+  volumeMode: ''
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
+  ingressClassName: ''
+  hosts: []
+  tls: []
+httpRoute:
+  enabled: false
+  annotations: {}
+  labels: {}
+  parentRefs: []
+  hostnames: []
+  rules: []
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+nodeSelector: {}
+tolerations: []
+affinity: {}
+hostAliases: []
+topologySpreadConstraints: []
+priorityClassName: ''
+probes:
+  scheme: HTTP
+  livenessProbe:
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readinessProbe:
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+pluginsManager:
+  enabled: false
+  configFile: plugin.yml
+  configContent: ''
+  baseImage: node:lts-alpine
+  version: latest
+  volumeMounts: []
+  securityContext: {}
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 0
+  maxUnavailable: null
+  unhealthyPodEvictionPolicy: null
+extraManifests: []

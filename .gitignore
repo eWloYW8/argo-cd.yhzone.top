@@ -5,3 +5,6 @@
 *.token
 secrets/
 !secrets/README.md
+
+# Kustomize downloads upstream Helm charts here.
+services/*/charts/

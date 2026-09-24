@@ -1,0 +1,3 @@
+name: local-path-provisioner
+namespace: local-path-storage
+ignoreDifferences: []

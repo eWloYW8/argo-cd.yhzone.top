@@ -1,60 +1,64 @@
-# yihao Kubernetes infrastructure
+# yihao GitOps
 
-独立 K3s 集群，通过 EasyTier 连接节点。现有 zjusct 集群不属于本仓库。
+K3s / EasyTier 私有集群，默认 context 为 `yihao`。首节点 `yihao-pve-debian`，API 为 `https://10.1.2.4:6443`。
 
-- 首节点：`yihao-pve-debian`，EasyTier `10.1.2.4` / `tun0`，LXC。
-- API：`https://10.1.2.4:6443`。
-- Pod CIDR：`10.42.0.0/16`；Service CIDR：`10.43.0.0/16`。
-- 默认 PVC：`yihao-local`，数据目录 `/home/yihao/k8s/storage/pvc`。
-- etcd 快照：`/home/yihao/k8s/storage/etcd-snapshots`。同盘快照不是异机备份。
-- 版本在 `bootstrap/versions.env` 中固定。
+## 目录约定
 
-## 使用
-
-```sh
-kubectl --context yihao get nodes -o wide
-kubectl --context yihao -n argocd port-forward svc/argocd-server 8080:443
+```text
+services/
+  argocd/                  # Argo CD 自管理与项目权限
+  cert-manager/            # Helm + Cloudflare ACME 签发器
+  harbor/                  # Helm + PostgreSQL + 缓存初始化任务
+  headlamp/                # Helm + 登录 RBAC
+  caddy/                   # 内网 HTTPS 入口与证书
+  local-path-provisioner/  # 本地存储
+clusters/yihao/             # 根 Application、ApplicationSet
+bootstrap/                 # K3s、LXC、宿主机引导
+docs/                      # 访问、恢复等运维说明
 ```
 
-Argo CD 访问 `https://localhost:8080`，初始账号 `admin`；密码通过以下命令在自己的终端读取，勿提交 Git：
+每个服务一个目录、一个 Application：
 
-```sh
-kubectl --context yihao -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
+```text
+services/harbor/
+  app.yaml                 # Application 名称、namespace、差异忽略规则
+  kustomization.yaml       # 服务入口：Helm Chart + 补充资源
+  values/harbor-1.19.2.yaml # 对应版本的完整默认值及本集群修改
+  resources/               # 数据库、PostSync 缓存初始化等
+  scripts/                 # 该服务的引导工具
 ```
 
-## 存储
+结构借鉴 `argo-cd.clusters.zjusct.io`。ApplicationSet 自动发现 `services/*/app.yaml`，无需为每个服务手写 Application。资源名称与 namespace 不强制随文件夹重命名，以保留存储与访问地址。纯清单服务使用 Kustomize；Argo CD 沿用固定版本官方清单，避免本次目录整理同时更换安装来源。
 
-本地卷绑定首节点，节点离线时不会自动迁移。Retain 防止删除 PVC 后立即清除数据；卷回收需要人工处理。请求容量不等于磁盘配额。当前数据与系统位于同一文件系统，需监控剩余空间并另建异机备份。
+`charts/` 是 Kustomize 下载缓存，不提交 Git。Helm Chart 版本在各服务 `kustomization.yaml` 中固定，values 文件名包含对应版本。真实凭据通过 Secret 引导，不写入 values 或 Git。
 
-## 引导与 GitOps
+## 修改与验证
 
-`bootstrap/k3s/config.yaml` 仅供首节点使用；K3s 是宿主机服务，由 systemd 管理。Argo CD 安装配置位于 `bootstrap/argocd`。GitOps 根路径为 `clusters/yihao`。
+```sh
+kubectl kustomize --enable-helm services/harbor
+kubectl kustomize clusters/yihao
+```
 
-GitHub 地址确定并推送后再创建根 Application。私有仓库凭据只写 Kubernetes Secret，不提交本仓库。初期不启用自动 prune。
+需要本机安装 Helm。渲染输出可能包含 Secret，不要提交或公开。提交遵循 Conventional Commits，例如 `feat(harbor): ...`、`fix(cert-manager): ...`。
 
-Headlamp、Harbor 代理缓存、cert-manager 和内网 Caddy 已纳入 GitOps。访问方式、登录命令及网络边界见 [服务访问说明](docs/access.md)。异机备份与公网入口尚未配置。
+新增服务时，增加服务目录、`app.yaml` 与 `kustomization.yaml` 后提交即可。ApplicationSet 采用 create-update，且自动 prune 关闭；移除服务需要显式检查并处理 Application 与资源，避免误删持久化数据。
 
-## 新节点
+## 访问
 
-先安装 EasyTier，确保固定 IP、API TCP 6443、节点间 VXLAN UDP 8472 和 kubelet TCP 10250 可达。新节点单独配置 node-ip、node-name、flannel-iface；token 从首节点受保护的 `/var/lib/rancher/k3s/server/agent-token` 安全传递。不得复制首节点的 cluster-init 配置。新节点加入前检查网段冲突，加入后验证跨节点 DNS、Pod 通信、MTU 与镜像架构。
+- https://headlamp.k8s.yhzone.top
+- https://argocd.k8s.yhzone.top
+- https://harbor.yhzone.top
 
-## LXC 兼容配置
+DNS 指向 EasyTier `10.1.2.4`，仅内网 443，公网入口尚未配置。登录和缓存用法见 [访问说明](docs/access.md)。
 
-`/etc/tmpfiles.d/yihao-k3s-kmsg.conf` 在 `/dev/kmsg` 缺失时链接到 `/dev/console`，让 kubelet 启动。这不是实际内核日志设备，因此内核 OOM 事件观测存在限制。未修改 PVE 宿主机配置。
+## 引导与恢复
 
-## 初始化与恢复
+`bootstrap/k3s/config.yaml` 仅用于首节点；K3s 由宿主机 systemd 管理。先完成 PVE sysctl、EasyTier 和 K3s 安装，再运行 `bootstrap/resume.sh`。已有集群直接使用 `yihao` context。
 
-2026-09-23：首节点 Ready；Argo CD 和本地存储 provisioner 已安装；集群 DNS、PVC 挂载写入、Pod 重建后的数据读取均已验证。PVE 宿主机所需 sysctl 已生效。`yihao` 为默认 context。
+私有仓库连接：`services/argocd/scripts/connect-github.sh`，只读 token 交互录入。它创建项目并应用 `clusters/yihao/application.yaml`。凭据初始化与恢复要求见访问说明。
 
-1. 重建前在 PVE 宿主机审阅并应用 `bootstrap/pve-sysctl.conf` 中的三个参数，持久化到 `/etc/sysctl.d/`。这些参数影响宿主机及其他容器。
-2. 安装固定版本 K3s 并恢复管理员 kubeconfig 后，本机执行 `./bootstrap/resume.sh` 引导节点、存储 provisioner 和 Argo CD。
-3. 本机执行 `gh auth login -h github.com` 登录 GitHub。
-4. 执行 `./bootstrap/connect-github.sh` 推送 main、交互录入只读 token 并连接 GitOps。推送使用本机 gh 登录；Argo CD token 仅写入集群 Secret，不进入 Git。
+PVC 数据位于 `~/k8s/storage/pvc`，etcd 快照位于 `~/k8s/storage/etcd-snapshots`。当前与系统盘共用文件系统；同盘快照不是异机备份。恢复需要数据库/镜像数据、Secret 和 K3s server token。
 
-初始 etcd 快照已创建在 `storage/etcd-snapshots`。恢复加密数据还需安全备份 `/var/lib/rancher/k3s/server/token`，不可提交 Git。快照与 PVC 当前都在本机系统盘，尚无异机备份。
+新增节点需固定 EasyTier IP，检查与 Pod `10.42.0.0/16`、Service `10.43.0.0/16` 的网段冲突；不要复制首节点 cluster-init 配置。本地持久卷只放在首节点。
 
-私有仓库：https://github.com/eWloYW8/argo-cd.yhzone.top 。根 Application 部署 `clusters/yihao`，其中含独立的 Argo CD 自管理 Application。默认存储只允许首节点，新增节点不会自动承载持久卷。
-
-Argo CD 与本机 git origin 均使用 HTTPS。轮换只读 token：运行 `python3 bootstrap/configure-repository.py`。
-
-NetworkManager 通过 `bootstrap/k3s/networkmanager.conf` 排除 CNI 与 Flannel 接口，防止自动 DHCP 接管并拆离 Pod veth。配置安装在 `/etc/NetworkManager/conf.d/90-yihao-k3s.conf`。
+LXC 的 `/dev/kmsg` 使用 console 兼容链接，内核 OOM 观测存在限制；NetworkManager 排除 CNI 接口的配置位于 `bootstrap/k3s/`。

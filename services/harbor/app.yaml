@@ -1,0 +1,9 @@
+name: harbor
+namespace: harbor
+ignoreDifferences:
+- group: apps
+  kind: StatefulSet
+  name: harbor-postgresql
+  namespace: harbor
+  jqPathExpressions:
+  - .spec.volumeClaimTemplates[].status

@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: yihao-services
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+  - missingkey=error
+  syncPolicy:
+    applicationsSync: create-update
+    preserveResourcesOnDeletion: true
+  ignoreApplicationDifferences:
+  - jsonPointers:
+    - /spec/syncPolicy/automated
+  generators:
+  - git:
+      repoURL: https://github.com/eWloYW8/argo-cd.yhzone.top.git
+      revision: main
+      files:
+      - path: services/*/app.yaml
+  template:
+    metadata:
+      name: '{{ .name }}'
+      namespace: argocd
+    spec:
+      project: yihao
+      source:
+        repoURL: https://github.com/eWloYW8/argo-cd.yhzone.top.git
+        targetRevision: main
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .namespace }}'
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true
+        - SkipDryRunOnMissingResource=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 3m
+  templatePatch: "spec:\n  ignoreDifferences: {{ .ignoreDifferences | toJson }}\n"

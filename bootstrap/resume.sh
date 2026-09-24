@@ -25,10 +25,10 @@ for i in $(seq 1 60); do
   sleep 2
 done
 "${k[@]}" wait --for=condition=Ready node/yihao-pve-debian --timeout=180s
-"${k[@]}" apply --server-side -k platform/storage
+"${k[@]}" apply --server-side -k services/local-path-provisioner
 "${k[@]}" create namespace argocd --dry-run=client -o yaml | "${k[@]}" apply -f -
-"${k[@]}" apply --server-side -k bootstrap/argocd
+"${k[@]}" apply --server-side -k services/argocd
 "${k[@]}" -n local-path-storage rollout status deployment/local-path-provisioner --timeout=180s
 "${k[@]}" -n argocd wait --for=condition=Available deployment --all --timeout=300s
 "${k[@]}" -n argocd rollout status statefulset/argocd-application-controller --timeout=300s
-printf '%s\n' 'Cluster and Argo CD ready. Push repository and run bootstrap/connect-github.sh.'
+printf '%s\n' 'Cluster and Argo CD ready. Push repository and run services/argocd/scripts/connect-github.sh.'

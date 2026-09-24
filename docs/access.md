@@ -41,7 +41,7 @@ docker login harbor.yhzone.top
 docker pull harbor.yhzone.top/dockerhub/library/busybox:1.37.0
 ```
 
-目前不改写 containerd 或其他节点的全局镜像源；使用上述前缀明确选择缓存。缓存项目由 `harbor-cache` Argo CD 应用的幂等 PostSync Job 配置。
+目前不改写 containerd 或其他节点的全局镜像源；使用上述前缀明确选择缓存。缓存项目由 `harbor` Argo CD 应用的幂等 PostSync Job 配置。
 
 镜像 PVC 请求 30 GiB、PostgreSQL 5 GiB、Redis 1 GiB、任务日志 1 GiB，均位于 `~/k8s/storage/pvc`。本地 PVC 大小不是文件系统硬配额；30 GiB 是 Harbor 项目的逻辑镜像配额，数据库、日志和上传临时文件另计。达到配额后需通过保留策略/垃圾回收释放空间，不保证自动 LRU 淘汰。Trivy 扫描器暂未启用。
 
@@ -51,9 +51,9 @@ docker pull harbor.yhzone.top/dockerhub/library/busybox:1.37.0
 
 ## 凭据恢复
 
-Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 bootstrap/import-cloudflare.py` 导入；不进入 Git。Harbor 初始化随机密钥、数据库密码和 token 签名证书保存在 `harbor-bootstrap`、`harbor-token-signing` 两个 Secret。备份必须包含这些 Secret 与数据库/镜像数据，避免单独恢复 PVC 后生成新密码。Git 仓库不包含这些凭据。
+Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 services/cert-manager/scripts/import-cloudflare.py` 导入；不进入 Git。Harbor 初始化随机密钥、数据库密码和 token 签名证书保存在 `harbor-bootstrap`、`harbor-token-signing` 两个 Secret。备份必须包含这些 Secret 与数据库/镜像数据，避免单独恢复 PVC 后生成新密码。Git 仓库不包含这些凭据。
 
-全新环境首次部署 Harbor 前，创建 harbor namespace 并运行 `python3 bootstrap/seed-harbor-secrets.py`（依赖 python3-bcrypt 和 OpenSSL）。RSA 签名私钥使用 Harbor 所需的 PKCS#1 格式；已有 PVC 时必须恢复原始凭据。
+全新环境首次部署 Harbor 前，创建 harbor namespace 并运行 `python3 services/harbor/scripts/seed-secrets.py`（依赖 python3-bcrypt 和 OpenSSL）。RSA 签名私钥使用 Harbor 所需的 PKCS#1 格式；已有 PVC 时必须恢复原始凭据。
 
 ## 验证记录（2026-09-23）
 

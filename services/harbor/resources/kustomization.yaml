@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: harbor
+resources:
+- database.yaml
+- database-service.yaml
+- cache-job.yaml
+configMapGenerator:
+- name: harbor-cache-scripts
+  files:
+  - configure-cache.py
+generatorOptions:
+  disableNameSuffixHash: true
