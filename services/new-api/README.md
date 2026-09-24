@@ -4,11 +4,11 @@
 
 ## 入口
 
-- 保留原公网地址：`https://newapi.d.yhzone.top:20443`。旧 Caddy 站点转发至内网 Kubernetes Ingress，仍依赖现有 Caddy/SNI fallback（经 EasyTier 直连） 链路。
+- 保留原公网地址：`https://newapi.d.yhzone.top:20443`。由 `new-api-legacy` 公网 Ingress 直接转发到应用 Service，不经过 Docker Caddy。
 - 新公网地址：`https://newapi.yhzone.top:20443`。
 - 内网地址：`https://newapi.k8s.yhzone.top`。
 
-沿用应用原有认证，不额外增加 Basic Auth。`FRONTEND_BASE_URL` 保持旧公网地址，已有客户端与回调无需改域名。新入口证书由 cert-manager 的 `letsencrypt-cloudflare` 签发。
+沿用应用原有认证，不额外增加 Basic Auth。`FRONTEND_BASE_URL` 保持旧公网地址，已有客户端与回调无需改域名。所有入口证书由 cert-manager 的 `letsencrypt-cloudflare` 签发。
 
 ## 数据与凭据
 
@@ -31,5 +31,5 @@
 1. 先备份 Kubernetes 当前数据和 Secrets，并通过 Git 将应用 replicas 设为 0，等待应用停止写入。
 2. 导出当前 PostgreSQL（pg_dump -Fc 和角色）及 Redis SAVE 快照，保存应用目录/日志；停止 Kubernetes 后端后再进行冷拷贝或恢复。
 3. 将最新数据恢复到原 Docker 数据路径/卷，保留匹配版本、所有者和原凭据。只有明确接受丢弃切换后的写入时，才能直接使用迁移前备份。
-4. 使用 `docker compose --profile legacy-rollback up -d` 启动原 Compose，检查健康后将 Caddy 的该站点 upstream 改回 `127.0.0.1:24313`；验证配置并 reload。不要用整份历史 Caddyfile 覆盖其他站点的新变更。
+4. 使用 `docker compose --profile legacy-rollback up -d` 启动原 Compose，检查健康后恢复对应 Caddy 站点（upstream `127.0.0.1:24313`），并从公网 Ingress 撤销旧域名路由以使 SNI 回退生效；验证配置并 reload。不要用整份历史 Caddyfile 覆盖其他站点的新变更。
 5. 若同时停用新公网入口，在 Git 中停用发布，并按仓库不自动 prune 的约定显式清理对应网络资源；不要删除数据 PVC。

@@ -84,7 +84,7 @@ spec:
               number: 80
 ```
 
-公网 Ingress 不添加内网 ExternalDNS 的 `dns.yhzone.top/managed` 注解。仅支持 `服务.yhzone.top` 单层、非通配域名。`networking.yhzone.top/publish-dns: "false"` 可暂缓 DNS 发布以便先验证入口。域名重复声明会暂停该域名的 DNS 发布，应确保唯一。
+公网 Ingress 不添加内网 ExternalDNS 的 `dns.yhzone.top/managed` 注解。支持 `服务.yhzone.top` 和保留入口 `服务.d.yhzone.top`，不接受其他子域或通配域名。`keys.poc.pub` 已撤销并在 SNI 层拒绝。`networking.yhzone.top/publish-dns: "false"` 可暂缓 DNS 发布以便先验证入口。域名重复声明会暂停该域名的 DNS 发布，应确保唯一。
 
 `PreferSameNode` + NativeLB 让 kube-proxy 优先本机后端，但这是偏好而非硬性约束；当本机后端迁移/消失时可跨节点转发。一个域名有多个 Service 后端时，只有同时拥有这些 Service Ready 后端的节点才进入 AAAA 候选。
 
@@ -130,3 +130,12 @@ ZJULibBooking opts into a namespace-local Basic Auth Middleware. There is no glo
 17 个具体旧域名在切换前后状态一致；原已返回 502 的失效站点未在本次修复。Vaultwarden、New API 页面正常，EasyTier 页面保留 Basic Auth 401，WSS 升级为 101。IPv4 与首节点 IPv6 路径均验证；Hysteria2 IPv4 经原 UDP 转发的认证连接及代理 HTTPS 请求通过。
 
 FRPC 原配置备份：`~/k8s/storage/backups/legacy-direct-20260924/frpc.toml.before`（含认证信息，不入 Git）。如需回退，先恢复 TCP 转发并验证 ali-sas:21443 已监听，再把 Git 中 `LEGACY_ADDRESS` 设回 `127.0.0.1`，等待两个网关加载；不要先改路由而留下空后端。
+
+
+## 保留域名迁入标准 Ingress
+
+`keys.yhzone.top`、`newapi.d.yhzone.top`、`easytier.yhzone.top`、`easytier-rpc.yhzone.top` 已由各服务 Helm chart 声明公网 Ingress，路由和证书不再依赖 Caddy。服务域名允许单层 `.yhzone.top` 及保留的 `.d.yhzone.top`；`.k8s.yhzone.top` 仍拒绝公网访问。`keys.poc.pub` 已删除 Caddy 站点，并在 SNI 层明确拒绝。
+
+原三个 CNAME 在保持 IPv4/IPv6 目标不变的情况下转换为 A/AAAA，并导入 ExternalDNS 的 `yihao-public` TXT 所有权。后续地址变动继续遵循手工 NodePublicIPv6、Ready 后端及 NativeLB 规则。证书由 cert-manager DNS01 管理。EasyTier Web 使用原 bcrypt 凭据的 Middleware，realm 为 restricted；WSS 不加 Basic Auth、不重写路径。
+
+切换前逐域名验证公网证书与对应 Kubernetes TLS Secret 完全匹配，并检查 IPv4/IPv6 的 HTTP 状态与 WSS 101 握手，再移除原 Caddy 站点。备份位于 `~/k8s/storage/backups/ingress-legacy-20260924/`，含敏感 Caddy 配置，不入 Git。

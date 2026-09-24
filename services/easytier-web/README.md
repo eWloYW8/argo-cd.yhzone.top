@@ -4,13 +4,13 @@
 
 ## 原入口与连接方式
 
-- 管理页面：`https://easytier.yhzone.top:20443`，保留原 Caddy Basic Auth 和应用账号认证。
+- 管理页面：`https://easytier.yhzone.top:20443`，由公网 Ingress 提供服务，沿用原 Basic Auth 用户名/密码哈希及应用账号认证。
 - 配置下发/RPC：`wss://easytier-rpc.yhzone.top:20443/<原客户端路径>`，保留现有客户端用户名路径及 WebSocket 协议，不增加 Basic Auth。
 - `WEB_DEFAULT_API_HOST=https://easytier.yhzone.top:20443`、全部端口和其他原环境配置不变。
 
-Pod 通过限定 `hostIP: 127.0.0.1` 的 hostPort 接管首节点原 `11211/TCP`（页面/API）和 `22020/TCP`（WS 配置服务）。原 Caddy upstream、认证、请求头处理、DNS、证书及 SNI 链路全部保持不变，不注册覆盖现有入口的公网 Ingress。集群内另提供同端口 ClusterIP Service `easytier-web`。
+页面和 WSS 分别由 `easytier-web-public`、`easytier-rpc-public` 标准 Ingress 管理，使用 `traefik-public`，公网端口仍为 20443。独立 Service 启用 NativeLB 和 PreferSameNode；TLS 由 cert-manager / Cloudflare DNS01 签发，A/AAAA 由现有公网控制器和 ExternalDNS 管理。
 
-保留此入口方式是为了使现有节点准确重连；不能同时启动原 Docker 容器，否则端口冲突。原 Basic Auth 仅在 Caddy 上管理。页面公网端口仍为 20443，Caddy 本地接入端口为 21443。
+页面的 `easytier-web-public-auth` Middleware 引用 Git 外的 `public-basic-auth` Secret，realm 保持 `restricted`；WSS 不附加 Basic Auth。路径不重写。原 Docker Caddy 站点和应用 Pod 的 loopback hostPort 已撤销，集群内仍提供同端口 ClusterIP Service `easytier-web`。
 
 ## 持久化与备份
 
@@ -26,9 +26,9 @@ Pod 通过限定 `hostIP: 127.0.0.1` 的 hostPort 接管首节点原 `11211/TCP`
 
 原 Docker 容器停止、restart=no，原 Compose 加入 `legacy-rollback` profile，原数据目录不删除。迁移后新增配置只写 Kubernetes 数据，原目录不再同步。
 
-1. 在 Git 将 replicas 设为 0，并等待 Pod 完全退出，以停止写入并释放两个 hostPort。
+1. 在 Git 将 replicas 设为 0，并等待 Pod 完全退出，以停止写入。
 2. 对最新 PVC 完整冷备份，再将最新数据恢复到原 Docker 数据目录，保持所有者/权限。SQLite 数据库与 WAL 必须配套恢复；恢复独立 SQLite backup 文件时不得混用旧 WAL/SHM。
-3. 用 `docker compose --profile legacy-rollback up -d` 启动原实例。无需修改 Caddy，随后检查页面认证、RPC WebSocket 握手和节点重连。
+3. 用 `docker compose --profile legacy-rollback up -d` 启动原实例。若回退到原 Docker 入口，还需恢复两个 Caddy 站点并撤销对应公网 Ingress 的 exposure 标签，使 SNI 回退到 Caddy。随后检查页面认证、RPC WebSocket 握手和节点重连。
 4. 切勿并行运行两个可写实例，或不经确认直接用迁移前旧库覆盖切换后的数据。PVC 不应删除。
 
 ## 节点启动依赖

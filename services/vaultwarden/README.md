@@ -4,8 +4,8 @@
 
 ## 访问
 
-- 保留 `https://keys.yhzone.top:20443` 和 `https://keys.poc.pub:20443`。现有 Caddy/SNI fallback（经 EasyTier 直连） 链路转接 Kubernetes 内网 Ingress，支持 WebSocket。
-- 新公网入口 `https://vaultwarden.yhzone.top:20443`；内网 `https://vaultwarden.k8s.yhzone.top`。新域名证书由 cert-manager / Cloudflare DNS01 管理。
+- 保留 `https://keys.yhzone.top:20443`，通过 `vaultwarden-legacy` 公网 Ingress 直达应用 Service，支持 WebSocket，不经过 Docker Caddy。`keys.poc.pub` 已移除并由 SNI 网关拒绝。
+- 新公网入口 `https://vaultwarden.yhzone.top:20443`；内网 `https://vaultwarden.k8s.yhzone.top`。全部 Kubernetes 域名证书由 cert-manager / Cloudflare DNS01 管理。
 - 原 `config.json` 的 domain 仍为 `https://keys.yhzone.top:20443`，客户端无需修改服务器地址。账号、两步验证、管理配置和 SMTP 配置保持原样，不额外增加 Basic Auth。
 
 ## 数据
@@ -20,6 +20,6 @@
 
 ## 回退与恢复
 
-切换后原 Docker 数据不再同步。回退前先暂停入口写入，在 Git 中将 replicas 设为 0，等待 Pod 完全停止，并备份最新完整 PVC 数据及 Secrets。将最新数据恢复到原 Docker `/data` 目录，保留权限，避免同时运行两个可写实例。使用 `docker compose --profile legacy-rollback up -d`，验证后仅将对应 Caddy 站点 upstream 改回 `127.0.0.1:20456` 并 validate/reload；不要覆盖其他站点变更。迁移前备份只能恢复到迁移时间点。
+切换后原 Docker 数据不再同步。回退前先暂停入口写入，在 Git 中将 replicas 设为 0，等待 Pod 完全停止，并备份最新完整 PVC 数据及 Secrets。将最新数据恢复到原 Docker `/data` 目录，保留权限，避免同时运行两个可写实例。使用 `docker compose --profile legacy-rollback up -d`，验证后恢复对应 Caddy 站点（upstream `127.0.0.1:20456`）并从公网 Ingress 撤销其旧域名路由，再 validate/reload；不要覆盖其他站点变更。迁移前备份只能恢复到迁移时间点。
 
 冷拷贝的 SQLite 数据库和 WAL 必须配套恢复；使用独立 SQLite backup 文件恢复时，不得混用旧 WAL/SHM。参见 [Vaultwarden 官方备份文档](https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault)。
