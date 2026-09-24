@@ -1,0 +1,3 @@
+name: external-dns-public
+namespace: external-dns
+ignoreDifferences: []

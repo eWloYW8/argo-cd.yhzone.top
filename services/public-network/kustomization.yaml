@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources
+configMapGenerator:
+- name: public-network-controller
+  files:
+  - controller/controller.py
+  namespace: public-network
+helmCharts:
+- name: traefik
+  repo: https://traefik.github.io/charts
+  version: 41.6.0
+  releaseName: traefik-public
+  namespace: public-network
+  valuesFile: values/traefik-41.6.0.yaml

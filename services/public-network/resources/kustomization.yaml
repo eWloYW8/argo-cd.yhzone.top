@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- nodepublicipv6-crd.yaml
+- yihao-pve-debian-ipv6.yaml
+- rbac.yaml
+- controller.yaml
+configMapGenerator:
+- name: public-edge-run
+  files:
+  - edge-run.sh
+  namespace: public-network
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,7 @@
+apiVersion: networking.yhzone.top/v1alpha1
+kind: NodePublicIPv6
+metadata:
+  name: REPLACE-WITH-KUBERNETES-NODE-NAME
+spec:
+  address: 2001:db8::1234
+  enabled: true

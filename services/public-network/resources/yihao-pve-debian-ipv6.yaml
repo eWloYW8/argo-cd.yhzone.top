@@ -1,0 +1,7 @@
+apiVersion: networking.yhzone.top/v1alpha1
+kind: NodePublicIPv6
+metadata:
+  name: yihao-pve-debian
+spec:
+  address: 2001:da8:e000:731a:be24:11ff:fe21:c6f6
+  enabled: true

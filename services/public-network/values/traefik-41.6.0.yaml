@@ -1,0 +1,761 @@
+image:
+  registry: null
+  repository: null
+  tag: null
+  digest: null
+  pullPolicy: IfNotPresent
+commonLabels: {}
+deployment:
+  enabled: true
+  kind: DaemonSet
+  replicas: 1
+  revisionHistoryLimit: null
+  terminationGracePeriodSeconds: 15
+  minReadySeconds: 0
+  healthchecksPort: null
+  healthchecksHost: 127.0.0.1
+  healthchecksScheme: null
+  readinessPath: ''
+  livenessPath: ''
+  annotations: {}
+  labels: {}
+  podAnnotations: {}
+  podLabels: {}
+  additionalContainers:
+  - name: public-edge
+    image: docker.io/library/haproxy:3.2.23-alpine
+    command:
+    - /bin/sh
+    - /run-edge/edge-run.sh
+    env:
+    - name: PUBLIC_PORT
+      value: '22443'
+    ports:
+    - name: public-edge
+      containerPort: 22443
+    volumeMounts:
+    - name: routes
+      mountPath: /routes
+      readOnly: true
+    - name: run
+      mountPath: /run-edge
+      readOnly: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        memory: 64Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+        - ALL
+    readinessProbe:
+      tcpSocket:
+        port: 22443
+      initialDelaySeconds: 3
+      periodSeconds: 5
+  additionalVolumes:
+  - name: routes
+    configMap:
+      name: public-edge-routes
+  - name: run
+    configMap:
+      name: public-edge-run
+  initContainers: []
+  shareProcessNamespace: false
+  hostUsers: null
+  dnsPolicy: ClusterFirstWithHostNet
+  dnsConfig: {}
+  hostAliases: []
+  imagePullSecrets: []
+  lifecycle: {}
+  runtimeClassName: ''
+  goMemLimitPercentage: 0.9
+  tmpVolume:
+    emptyDir: {}
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: null
+  minAvailable: null
+ingressClass:
+  enabled: true
+  isDefaultClass: false
+  name: traefik-public
+core:
+  defaultRuleSyntax: ''
+  strictTLSOptions: false
+experimental:
+  abortOnPluginFailure: false
+  fastProxy:
+    enabled: false
+    debug: false
+  kubernetesGateway:
+    enabled: false
+  plugins: {}
+  localPlugins: {}
+  otlpLogs: false
+  knative: false
+gateway:
+  enabled: false
+  name: ''
+  namespace: ''
+  annotations: {}
+  infrastructure: {}
+  defaultScope: null
+  listeners:
+    web:
+      port: 8000
+      hostname: ''
+      protocol: HTTP
+      namespacePolicy: null
+gatewayClass:
+  enabled: false
+  name: ''
+  labels: {}
+api:
+  dashboard: false
+  dashboardName: ''
+  disableDashboardAd: null
+  insecure: null
+  debug: null
+  basePath: ''
+ingressRoute:
+  dashboard:
+    enabled: false
+    annotations: {}
+    labels: {}
+    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    services:
+    - name: api@internal
+      kind: TraefikService
+    entryPoints:
+    - traefik
+    middlewares: []
+    tls: {}
+  healthcheck:
+    enabled: false
+    annotations: {}
+    labels: {}
+    matchRule: PathPrefix(`/ping`)
+    services:
+    - name: ping@internal
+      kind: TraefikService
+    entryPoints:
+    - traefik
+    middlewares: []
+    tls: {}
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 0
+readinessProbe:
+  failureThreshold: 1
+  initialDelaySeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+livenessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 2
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 2
+startupProbe: {}
+providers:
+  precedence: []
+  kubernetesCRD:
+    enabled: false
+    allowCrossNamespace: false
+    allowExternalNameServices: false
+    allowEmptyServices: true
+    crossProviderNamespaces: []
+    defaultTLSResourcesNamespace: ''
+    ingressClass: ''
+    labelSelector: ''
+    namespaces: []
+    nativeLBByDefault: false
+    safeNaming: false
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: false
+    allowEmptyServices: true
+    crossProviderNamespaces: []
+    disableIngressClassLookup: false
+    ingressClass: traefik-public
+    labelSelector: networking.yhzone.top/exposure=public
+    namespaces: []
+    publishedService:
+      enabled: false
+    ingressEndpoint:
+      ip: 101.37.69.162
+      hostname: ''
+    nativeLBByDefault: false
+    strictPrefixMatching: false
+  kubernetesGateway:
+    enabled: false
+    crossProviderNamespaces: []
+    experimentalChannel: false
+    namespaces: []
+    labelSelector: ''
+    nativeLBByDefault: false
+    qps: null
+    burst: null
+    statusAddress:
+      ip: ''
+      hostname: ''
+      service:
+        enabled: true
+        name: ''
+        namespace: ''
+  file:
+    enabled: false
+    watch: true
+    content: {}
+  kubernetesIngressNGINX:
+    enabled: false
+    controllerClass: k8s.io/ingress-nginx
+    ingressClass: nginx
+    ingressClassByName: false
+    watchIngressWithoutClass: false
+    watchNamespace: ''
+    watchNamespaceSelector: ''
+    publishService:
+      enabled: false
+      pathOverride: ''
+    publishStatusAddress: ''
+    defaultBackendService: ''
+    disableSvcExternalName: false
+    throttleDuration: ''
+    certAuthFilePath: ''
+    endpoint: ''
+    token: ''
+    proxyRequestBuffering: null
+    clientBodyBufferSize: null
+    proxyBodySize: null
+    proxyBuffering: null
+    proxyBufferSize: null
+    proxyBuffersNumber: null
+    proxyConnectTimeout: null
+    proxyReadTimeout: null
+    proxySendTimeout: null
+    proxyNextUpstream: ''
+    proxyNextUpstreamTries: null
+    proxyNextUpstreamTimeout: null
+    customHTTPErrors: []
+    upstreamKeepaliveTimeout: null
+    allowCrossNamespaceResources: null
+    globalAllowedResponseHeaders: []
+    globalAuthUrl: ''
+    ipAllowListStrategy:
+      depth: 0
+      excludedIPS: []
+      ipv6Subnet: 0
+    allowSnippetAnnotations: null
+    strictValidatePathType: null
+    httpEntryPoint: web
+    httpsEntryPoint: websecure
+    modsec:
+      enabled: false
+      owaspCoreRules: false
+      snippet: ''
+  knative:
+    enabled: false
+    namespaces: []
+    labelSelector: ''
+volumes: []
+additionalVolumeMounts: []
+log:
+  format: null
+  level: INFO
+  filePath: ''
+  noColor: false
+  otlp:
+    enabled: false
+    serviceName: null
+    http:
+      enabled: false
+      endpoint: ''
+      headers: {}
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    grpc:
+      enabled: false
+      endpoint: ''
+      insecure: false
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    resourceAttributes: {}
+accessLog:
+  enabled: false
+  format: null
+  bufferingSize: null
+  timezone: ''
+  filters:
+    statusCodes: ''
+    retryAttempts: false
+    minDuration: ''
+  addInternals: false
+  dualOutput: false
+  fields:
+    defaultMode: keep
+    names: {}
+    headers:
+      defaultMode: drop
+      names: {}
+    queryParameters:
+      defaultMode: null
+  otlp:
+    enabled: false
+    serviceName: null
+    http:
+      enabled: false
+      endpoint: ''
+      headers: {}
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    grpc:
+      enabled: false
+      endpoint: ''
+      insecure: false
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    resourceAttributes: {}
+metrics:
+  addInternals: false
+  prometheus: null
+  otlp:
+    enabled: false
+    addEntryPointsLabels: null
+    addRoutersLabels: null
+    addServicesLabels: null
+    explicitBoundaries: []
+    pushInterval: ''
+    serviceName: null
+    http:
+      enabled: false
+      endpoint: ''
+      headers: {}
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    grpc:
+      enabled: false
+      endpoint: ''
+      insecure: false
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    resourceAttributes: {}
+ocsp:
+  enabled: false
+  responderOverrides: {}
+tracing:
+  addInternals: false
+  serviceName: null
+  resourceAttributes: {}
+  capturedRequestHeaders: []
+  capturedResponseHeaders: []
+  safeQueryParams: []
+  sampleRate: null
+  otlp:
+    enabled: false
+    http:
+      enabled: false
+      endpoint: ''
+      headers: {}
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+    grpc:
+      enabled: false
+      endpoint: ''
+      insecure: false
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: null
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+  notAppendXForwardedFor: false
+  azure:
+    enabled: false
+    images:
+      proxy:
+        image: traefik
+        tag: latest
+        registry: docker.io/library
+      hub:
+        image: traefik-hub
+        tag: latest
+        registry: ghcr.io/traefik
+additionalArguments: []
+env: []
+envFrom: []
+ports:
+  traefik:
+    port: 18081
+    hostPort: null
+    hostIP: 127.0.0.1
+    expose:
+      default: false
+    exposedPort: 8080
+    protocol: TCP
+    observability:
+      metrics: null
+      accessLogs: null
+      tracing: null
+      traceVerbosity: null
+  web: null
+  websecure:
+    port: 20444
+    hostPort: null
+    containerPort: null
+    expose:
+      default: true
+    exposedPort: 20443
+    targetPort: null
+    protocol: TCP
+    nodePort: null
+    appProtocol: null
+    allowACMEByPass: false
+    http:
+      encodedCharacters:
+        allowEncodedSlash: null
+        allowEncodedBackSlash: null
+        allowEncodedNullCharacter: null
+        allowEncodedSemicolon: null
+        allowEncodedPercent: null
+        allowEncodedQuestionMark: null
+        allowEncodedHash: null
+      maxHeaderBytes: null
+      middlewares: []
+      sanitizePath: null
+      aliasHeadersStrategy: null
+      underscoreHeadersStrategy: null
+      tls:
+        enabled: true
+        options: ''
+        certResolver: ''
+        domains: []
+    http3:
+      enabled: false
+      advertisedPort: null
+    forwardedHeaders:
+      trustedIPs: []
+      insecure: false
+      notAppendXForwardedFor: false
+    proxyProtocol:
+      trustedIPs:
+      - 127.0.0.1/32
+      - ::1/128
+      insecure: false
+    transport:
+      respondingTimeouts:
+        readTimeout: 0s
+        writeTimeout: null
+        idleTimeout: null
+      lifeCycle:
+        requestAcceptGraceTimeout: null
+        graceTimeOut: null
+      keepAliveMaxRequests: null
+      keepAliveMaxTime: null
+    observability:
+      metrics: null
+      accessLogs: null
+      tracing: null
+      traceVerbosity: null
+    hostIP: 127.0.0.1
+  metrics: null
+tlsOptions: {}
+tlsStore: {}
+service:
+  enabled: false
+  nameOverride: ''
+  single: true
+  annotations: {}
+  annotationsTCP: {}
+  annotationsUDP: {}
+  labels: {}
+  spec:
+    type: LoadBalancer
+  additionalServices: {}
+autoscaling:
+  enabled: false
+  minReplicas: null
+  maxReplicas: null
+  metrics: []
+  behavior: {}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: '{{ template "traefik.fullname" . }}'
+persistence:
+  enabled: false
+  name: data
+  existingClaim: ''
+  accessMode: ReadWriteOnce
+  size: 128Mi
+  storageClass: null
+  volumeName: ''
+  path: /data
+  annotations: {}
+  subPath: ''
+  emptyDir: {}
+certificatesResolvers: {}
+hostNetwork: true
+rbac:
+  enabled: true
+  namespaced: false
+  aggregateTo: []
+  secretResourceNames: []
+serviceAccount:
+  name: ''
+serviceAccountAnnotations: {}
+resources:
+  requests:
+    cpu: 30m
+    memory: 48Mi
+  limits:
+    memory: 160Mi
+affinity: {}
+nodeSelector:
+  networking.yhzone.top/public-gateway: 'true'
+tolerations: []
+topologySpreadConstraints: []
+priorityClassName: ''
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+    add:
+    - NET_BIND_SERVICE
+  readOnlyRootFilesystem: true
+podSecurityContext:
+  runAsGroup: 0
+  runAsNonRoot: false
+  runAsUser: 0
+  seccompProfile:
+    type: RuntimeDefault
+extraObjects: []
+namespaceOverride: ''
+instanceLabelOverride: ''
+versionOverride: ''
+nameOverride: ''
+fullnameOverride: ''
+hub:
+  enabled: null
+  token: ''
+  tokenMountPath: /etc/secrets
+  hardened: false
+  offline: null
+  namespaces: []
+  apimanagement:
+    enabled: false
+    admission:
+      listenAddr: ''
+      secretName: hub-agent-cert
+      selfManagedCertificate: false
+      customWebhookCertificate: {}
+      restartOnCertificateChange: true
+      annotations: {}
+    openApi:
+      validateRequestMethodAndPath: false
+      refreshInterval: ''
+  mcpgateway:
+    enabled: false
+    maxRequestBodySize: null
+  aigateway:
+    enabled: false
+    maxRequestBodySize: null
+  providers:
+    consulCatalogEnterprise:
+      enabled: false
+      cache: false
+      connectAware: false
+      connectByDefault: false
+      constraints: ''
+      defaultRule: Host(`{{ normalize .Name }}`)
+      endpoint:
+        address: ''
+        datacenter: ''
+        endpointWaitTime: null
+        httpauth:
+          password: ''
+          username: ''
+        scheme: ''
+        tls:
+          ca: ''
+          cert: ''
+          insecureSkipVerify: false
+          key: ''
+        token: ''
+      exposedByDefault: true
+      namespaces: ''
+      partition: ''
+      prefix: traefik
+      refreshInterval: 15
+      requireConsistent: false
+      serviceName: traefik
+      stale: false
+      strictChecks: passing, warning
+      watch: false
+    ec2:
+      enabled: false
+      region: ''
+      accessKeyID: ''
+      secretAccessKey: ''
+      exposedByDefault: true
+      refreshSeconds: 15
+      defaultRule: ''
+      constraints: ''
+      ipMode: ''
+      filters: []
+      securityGroupPortDiscovery:
+        enabled: false
+        excludedPorts: []
+    microcks:
+      enabled: false
+      auth:
+        clientId: ''
+        clientSecret: ''
+        endpoint: ''
+        token: ''
+      endpoint: ''
+      pollInterval: 30
+      pollTimeout: 5
+      tls:
+        ca: ''
+        cert: ''
+        insecureSkipVerify: false
+        key: ''
+    multicluster:
+      enabled: false
+      pollInterval: 5
+      pollTimeout: 5
+      children:
+        cluster-1:
+          address: ''
+          serversTransport:
+            insecureSkipVerify: null
+            serverName: ''
+            rootCAs: []
+            certificates: []
+            maxIdleConnsPerHost: null
+            disableHTTP2: null
+            minVersion: ''
+            maxVersion: ''
+            cipherSuites: []
+            peerCertURI: ''
+            forwardingTimeouts:
+              dialTimeout: null
+              responseHeaderTimeout: null
+              idleConnTimeout: null
+              pingTimeout: null
+              readIdleTimeout: null
+              readTimeout: null
+              writeTimeout: null
+            spiffe:
+              ids: []
+              trustDomain: ''
+    nutanixPrismCentral:
+      enabled: false
+      endpoint: ''
+      username: ''
+      password: ''
+      apiKey: ''
+      filename: ''
+      pollInterval: 30
+      pollTimeout: 5
+      serviceNameCategoryKey: TraefikServiceName
+      allowedVpcs: []
+      tls:
+        ca: ''
+        cert: ''
+        key: ''
+        insecureSkipVerify: false
+  redis:
+    cluster: null
+    database: null
+    endpoints: ''
+    username: ''
+    password: ''
+    sentinel:
+      masterset: ''
+      username: ''
+      password: ''
+    timeout: ''
+    tls:
+      ca: ''
+      cert: ''
+      key: ''
+      insecureSkipVerify: false
+  sendlogs: null
+  transparencyLogs:
+    driver:
+      posix:
+        path: ''
+      gcp:
+        bucket: ''
+        bucketPrefix: ''
+        spanner: ''
+      aws:
+        bucket: ''
+        bucketPrefix: ''
+        dsn: ''
+        maxOpenConns: null
+        maxIdleConns: null
+    signerPrivateKey: ''
+    checkpointInterval: ''
+    debug: null
+    witnessGroup:
+      threshold: null
+      timeout: ''
+      failOpen: null
+      witnesses: []
+  tracing:
+    additionalTraceHeaders:
+      enabled: false
+      traceContext:
+        parentId: ''
+        traceId: ''
+        traceParent: ''
+        traceState: ''
+  pluginRegistry:
+    sources: {}
+oci_meta:
+  enabled: false
+  repo: traefik
+  images:
+    proxy:
+      image: traefik
+      tag: latest
+    hub:
+      image: traefik-hub
+      tag: latest
+offering_version: ''
+enabled: true

@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: public-network-controller
+  namespace: public-network
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: public-network-controller
+  template:
+    metadata:
+      labels:
+        app: public-network-controller
+    spec:
+      serviceAccountName: public-network-controller
+      nodeSelector:
+        kubernetes.io/hostname: yihao-pve-debian
+      containers:
+      - name: controller
+        image: docker.io/library/python:3.13.12-alpine
+        command:
+        - python
+        - -u
+        - /app/controller.py
+        env:
+        - name: NAMESPACE
+          value: public-network
+        - name: PUBLIC_IPV4
+          value: 101.37.69.162
+        - name: IPV4_NODE
+          value: ali-sas
+        - name: PYTHONDONTWRITEBYTECODE
+          value: '1'
+        resources:
+          requests:
+            cpu: 20m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+        securityContext:
+          runAsUser: 65532
+          runAsGroup: 65532
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: code
+          mountPath: /app
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - import os,time; assert time.time()-os.stat('/tmp/last-success').st_mtime
+              < 90
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - import os,time; assert time.time()-os.stat('/tmp/last-success').st_mtime
+              < 180
+          initialDelaySeconds: 180
+          periodSeconds: 30
+      volumes:
+      - name: code
+        configMap:
+          name: public-network-controller
+      - name: tmp
+        emptyDir: {}

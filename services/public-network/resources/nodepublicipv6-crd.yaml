@@ -1,0 +1,51 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: nodepublicipv6s.networking.yhzone.top
+  annotations:
+    argocd.argoproj.io/sync-wave: '-10'
+spec:
+  group: networking.yhzone.top
+  scope: Cluster
+  names:
+    plural: nodepublicipv6s
+    singular: nodepublicipv6
+    kind: NodePublicIPv6
+    shortNames:
+    - npv6
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    additionalPrinterColumns:
+    - name: IPv6
+      type: string
+      jsonPath: .spec.address
+    - name: Enabled
+      type: boolean
+      jsonPath: .spec.enabled
+    - name: Phase
+      type: string
+      jsonPath: .status.phase
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required:
+            - address
+            properties:
+              address:
+                type: string
+                minLength: 2
+                maxLength: 39
+                pattern: ^[0-9a-fA-F:]+$
+              enabled:
+                type: boolean
+                default: true
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true

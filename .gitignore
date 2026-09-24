@@ -8,3 +8,5 @@ secrets/
 
 # Kustomize downloads upstream Helm charts here.
 services/*/charts/
+
+__pycache__/
