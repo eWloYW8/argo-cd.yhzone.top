@@ -168,14 +168,14 @@ startupProbe: {}
 providers:
   precedence: []
   kubernetesCRD:
-    enabled: false
+    enabled: true
     allowCrossNamespace: false
     allowExternalNameServices: false
     allowEmptyServices: true
     crossProviderNamespaces: []
     defaultTLSResourcesNamespace: ''
-    ingressClass: ''
-    labelSelector: ''
+    ingressClass: traefik-public
+    labelSelector: networking.yhzone.top/exposure=public
     namespaces: []
     nativeLBByDefault: false
     safeNaming: false
