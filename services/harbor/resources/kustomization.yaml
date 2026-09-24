@@ -10,5 +10,6 @@ configMapGenerator:
 - name: harbor-cache-scripts
   files:
   - configure-cache.py
+  - cache-config.json
 generatorOptions:
   disableNameSuffixHash: true

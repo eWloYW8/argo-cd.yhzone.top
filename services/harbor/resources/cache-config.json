@@ -1,0 +1,67 @@
+{
+  "registries": [
+    {
+      "name": "dockerhub",
+      "type": "docker-hub",
+      "url": "https://hub.docker.com"
+    },
+    {
+      "name": "quay.io",
+      "type": "docker-registry",
+      "url": "https://quay.io"
+    },
+    {
+      "name": "ghcr.io",
+      "type": "github-ghcr",
+      "url": "https://ghcr.io"
+    },
+    {
+      "name": "registry.k8s.io",
+      "type": "docker-registry",
+      "url": "https://registry.k8s.io"
+    },
+    {
+      "name": "public.ecr.aws",
+      "type": "docker-registry",
+      "url": "https://public.ecr.aws"
+    }
+  ],
+  "projects": [
+    {
+      "name": "docker.io",
+      "registry": "dockerhub",
+      "public": true,
+      "quotaGiB": 10
+    },
+    {
+      "name": "quay.io",
+      "registry": "quay.io",
+      "public": true,
+      "quotaGiB": 8
+    },
+    {
+      "name": "ghcr.io",
+      "registry": "ghcr.io",
+      "public": true,
+      "quotaGiB": 5
+    },
+    {
+      "name": "registry.k8s.io",
+      "registry": "registry.k8s.io",
+      "public": true,
+      "quotaGiB": 3
+    },
+    {
+      "name": "public.ecr.aws",
+      "registry": "public.ecr.aws",
+      "public": true,
+      "quotaGiB": 2
+    },
+    {
+      "name": "dockerhub",
+      "registry": "dockerhub",
+      "public": false,
+      "quotaGiB": 2
+    }
+  ]
+}
