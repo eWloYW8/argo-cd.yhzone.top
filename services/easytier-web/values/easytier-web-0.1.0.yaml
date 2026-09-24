@@ -1,5 +1,5 @@
 image: easytier-web/app@sha256:fa603f64c457eeeac5dcb8df3c05b3cadbed86742fdb0912b43028e2d9766607
-replicas: 0
+replicas: 1
 runtimeEnv: true
 uid: 0
 readOnlyRootFilesystem: false
