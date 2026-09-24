@@ -1,0 +1,5 @@
+apiVersion: v2
+name: vaultwarden
+version: 0.1.0
+appVersion: "1.36.0-46ae59ea"
+type: application

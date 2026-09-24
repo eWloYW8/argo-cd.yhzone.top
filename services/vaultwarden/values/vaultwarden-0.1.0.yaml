@@ -1,0 +1,24 @@
+image: vaultwarden/app@sha256:81fe8510622a214285a306259187d3686b127c6319b3e752324ec4b893a6902a
+replicas: 0
+publishDNS: false
+runtimeEnv: true
+uid: 0
+readOnlyRootFilesystem: false
+port: 80
+healthPath: /alive
+storageSize: 5Gi
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 1Gi
+mounts:
+- subPath: data
+  mountPath: /data
+  readOnly: false
+hosts:
+  internal: vaultwarden.k8s.yhzone.top
+  public: vaultwarden.yhzone.top
+publicBasicAuth:
+  enabled: false
