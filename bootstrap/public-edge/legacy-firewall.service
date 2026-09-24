@@ -1,0 +1,12 @@
+[Unit]
+Description=Keep legacy public TLS backends local to the SNI edge
+Before=docker.service k3s.service k3s-agent.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c '/usr/sbin/iptables -C INPUT -i eth0 -p tcp --dport 21443 -j DROP 2>/dev/null || /usr/sbin/iptables -I INPUT -i eth0 -p tcp --dport 21443 -j DROP'
+ExecStart=/bin/sh -c '/usr/sbin/ip6tables -C INPUT -i eth0 -p tcp --dport 21443 -j DROP 2>/dev/null || /usr/sbin/ip6tables -I INPUT -i eth0 -p tcp --dport 21443 -j DROP'
+
+[Install]
+WantedBy=multi-user.target
