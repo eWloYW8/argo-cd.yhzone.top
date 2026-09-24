@@ -6,9 +6,9 @@
 | Argo CD | https://argocd.k8s.yhzone.top |
 | Harbor | https://harbor.yhzone.top |
 
-Cloudflare DNS-only A 记录：`*.k8s.yhzone.top`、`harbor.yhzone.top` → `10.1.2.4`。当前公网入口未配置。Caddy 在集群中以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`。原 Docker Caddy 的 20443 不变。需要加入 EasyTier 或有到该地址的路由才能访问。
+ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网入口尚未配置，原 Docker Caddy 的 20443 保留。
 
-cert-manager 使用 Let's Encrypt ACME 和 Cloudflare DNS-01，签发 `*.k8s.yhzone.top` 与 `harbor.yhzone.top` 证书。DNS 自检使用 DoH，避开本机透明代理的普通 DNS 缓存/拦截。Caddy 每 30 秒检查挂载的证书与配置，变化后执行强制热加载。私钥仅位于集群 Secret 和 Pod 只读挂载，不导出到 Docker Caddy。
+cert-manager 根据 Ingress 注解自动创建每服务的 Certificate，使用 Let's Encrypt ACME 和 Cloudflare DNS-01。TLS Secret 保存在各服务 namespace，Traefik 自动加载更新，无需手写 Caddyfile 或定时重载脚本。DNS 自检使用 DoH。新增服务见 [Ingress 配置](../services/traefik/README.md)。
 
 ## 登录
 
@@ -55,6 +55,6 @@ Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 services/ce
 
 全新环境首次部署 Harbor 前，创建 harbor namespace 并运行 `python3 services/harbor/scripts/seed-secrets.py`（依赖 python3-bcrypt 和 OpenSSL）。RSA 签名私钥使用 Harbor 所需的 PKCS#1 格式；已有 PVC 时必须恢复原始凭据。
 
-## 验证记录（2026-09-23）
+## 验证记录
 
-所有 Argo CD 应用 Synced / Healthy；三个 HTTPS 地址通过系统 CA 校验。Harbor 登录及 `dockerhub/library/busybox:1.37.0` 实际拉取成功，registry API 确认缓存 artifact 已存在。Caddy 强制热加载已验证。首张证书到期时间为 2026-12-22，cert-manager 计划于 2026-11-22 续期。
+所有 Argo CD 应用 Synced / Healthy；三个 HTTPS 地址通过系统 CA 校验。Harbor 登录及 `dockerhub/library/busybox:1.37.0` 实际拉取成功，registry API 确认缓存 artifact 已存在。入口已迁移为 Traefik + 每服务 Ingress，证书由各服务 Certificate 自动续期。

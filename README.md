@@ -11,7 +11,7 @@ services/
   external-dns/            # Helm + Cloudflare DNS 自动管理
   harbor/                  # Helm + PostgreSQL + 缓存初始化任务
   headlamp/                # Helm + 登录 RBAC
-  caddy/                   # 内网 HTTPS 入口与证书
+  traefik/                 # Helm + 标准 Ingress 内网 HTTPS 入口
   local-path-provisioner/  # 本地存储
 clusters/yihao/             # 根 Application、ApplicationSet
 bootstrap/                 # K3s、LXC、宿主机引导
@@ -65,3 +65,5 @@ PVC 数据位于 `~/k8s/storage/pvc`，etcd 快照位于 `~/k8s/storage/etcd-sna
 LXC 的 `/dev/kmsg` 使用 console 兼容链接，内核 OOM 观测存在限制；NetworkManager 排除 CNI 接口的配置位于 `bootstrap/k3s/`。
 
 DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/README.md)。
+
+新增 HTTP 服务使用各自目录中的 Ingress，自动完成路由、证书及 DNS 配置，见 [入口说明](services/traefik/README.md)。

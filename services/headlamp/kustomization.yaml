@@ -11,5 +11,3 @@ helmCharts:
   namespace: headlamp
   includeCRDs: true
   valuesFile: values/headlamp-0.45.0.yaml
-patches:
-- path: patches/dns.yaml

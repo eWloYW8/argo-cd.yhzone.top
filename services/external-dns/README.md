@@ -18,7 +18,7 @@ metadata:
     external-dns.kubernetes.io/cloudflare-proxied: "false"
 ```
 
-目标必须是可达入口地址。当前由 Caddy 监听 EasyTier 10.1.2.4:443；新增 HTTP 服务还需要配置 Caddy 路由，ExternalDNS 不解析 Caddyfile，也不配置端口。
+目标必须是可达入口地址。当前由 Traefik 监听 EasyTier 10.1.2.4:443。HTTP 服务优先在自己的 Ingress 上配置这些注解，域名来自 spec.rules / spec.tls；无需给后端 Service 重复添加注解，ExternalDNS 不配置端口。参见 [Ingress 示例](../traefik/README.md)。
 
 删除集群资源或移除其 DNS 注解后，对应的受管 DNS 记录会自动删除。Argo CD 自动 prune 关闭，仅删除 Git 文件不会删除已有 Kubernetes 资源，需要显式同步删除。原有 `*.k8s.yhzone.top` 泛解析保留且不归本控制器管理，因此单条记录删除后该域名仍可能通过泛解析解析。
 

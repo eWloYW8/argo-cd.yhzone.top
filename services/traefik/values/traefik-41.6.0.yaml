@@ -387,7 +387,7 @@ ports:
       traceVerbosity: null
   web: null
   websecure:
-    port: 8443
+    port: 443
     hostPort: null
     containerPort: null
     expose:

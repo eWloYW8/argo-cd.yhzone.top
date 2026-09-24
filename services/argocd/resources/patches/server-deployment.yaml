@@ -6,4 +6,4 @@ spec:
   template:
     metadata:
       annotations:
-        yihao.top/tls-termination: caddy
+        yihao.top/tls-termination: traefik
