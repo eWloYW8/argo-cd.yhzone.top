@@ -113,3 +113,9 @@ Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kube
 已迁移到 Kubernetes，保留 https://keys.yhzone.top:20443 和 https://keys.poc.pub:20443，经原 Caddy 入口转发至 Kubernetes。原账号、认证配置和客户端服务器地址保持不变。新增 https://vaultwarden.yhzone.top:20443 与内网 https://vaultwarden.k8s.yhzone.top。
 
 完整数据冷备份位于 `~/k8s/storage/backups/vaultwarden-migration-20260924/`，原 Docker 数据保留、自动重启关闭。SQLite、配置和签名密钥已校验；详细存储和回退方法见 [Vaultwarden](../services/vaultwarden/README.md)。
+
+## EasyTier Web
+
+已迁入 Kubernetes，精确保留管理页面 `https://easytier.yhzone.top:20443` 与配置下发入口 `wss://easytier-rpc.yhzone.top:20443/<原客户端路径>`。原 Basic Auth、应用账号、客户端路径、端口和 Caddy 配置不变，客户端无需调整。Pod 接管原 loopback 11211/22020 端口；宿主机 EasyTier 组网服务保持独立运行。
+
+迁移前完整数据及配置备份在 `~/k8s/storage/backups/easytier-web-migration-20260924/`，原 Docker 数据保留。详见 [EasyTier Web](../services/easytier-web/README.md)。
