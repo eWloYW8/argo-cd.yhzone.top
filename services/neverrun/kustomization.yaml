@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: neverrun
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: neverrun
+  version: 0.1.0
+  releaseName: neverrun
+  namespace: neverrun
+  valuesFile: values/neverrun-0.1.0.yaml
+components:
+- ../../components/image-prefix

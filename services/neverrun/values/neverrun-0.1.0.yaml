@@ -1,0 +1,8 @@
+image: neverrun/app@sha256:a9b34a1752efbfd9b4b7ac60c8ba4a0291bbc83a0e4f5f80bc363ef378d4a9ea
+nodeName: yihao-pve-debian
+hosts:
+  internal: neverrun.k8s.yhzone.top
+  public: neverrun.yhzone.top
+publicBasicAuth:
+  enabled: true
+  secretName: public-basic-auth
