@@ -14,7 +14,7 @@ Argo CD 管理的独立 Traefik UDP 网关，固定运行在 `ali-sas`，接管�
 
 ## 验证与切换
 
-先在临时 UDP 31443 验证 EasyTier 和公网 IPv4 的真实 Hysteria2 客户端认证、系统 CA 证书校验、代理 HTTPS 请求，再删除 FRPC 的 hysteria 条目并切换到正式 UDP 30443。临时端口不保留。FRPC 历史 EasyTier UDP 22020 条目未在本次清理。
+先在临时 UDP 31443 验证 EasyTier 和公网 IPv4 的真实 Hysteria2 客户端认证、系统 CA 证书校验、代理 HTTPS 请求，再删除 FRPC 的 hysteria 条目并切换到正式 UDP 30443。临时端口不保留。历史 EasyTier UDP 22020 已确认没有监听后端，FRPC 随后按要求停用；原配置仍保留。
 
 FRPC 配置备份在 `~/k8s/storage/backups/hysteria2-udp-20260924/frpc.toml.before`，含敏感凭据，不进入 Git。
 

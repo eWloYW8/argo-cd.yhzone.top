@@ -125,7 +125,7 @@ ZJULibBooking opts into a namespace-local Basic Auth Middleware. There is no glo
 
 ## 2026-09-24 旧入口 IPv4 去除 FRP 依赖
 
-旧站点的 SNI 默认后端已改为 `10.1.2.4:21443`，两个 Kubernetes 网关均使用该目标。验证 ali-sas 实际建立了经 EasyTier 到首节点的 TCP 连接，随后删除 FRPC 的 `caddy` TCP 条目并重启 FRPC。后续 Hysteria2 UDP 30443 也已由独立 Kubernetes 网关接管；FRPC 目前只剩历史 EasyTier UDP 22020。
+旧站点的 SNI 默认后端已改为 `10.1.2.4:21443`，两个 Kubernetes 网关均使用该目标。验证 ali-sas 实际建立了经 EasyTier 到首节点的 TCP 连接，随后删除 FRPC 的 `caddy` TCP 条目并重启 FRPC。后续 Hysteria2 UDP 30443 也已由独立 Kubernetes 网关接管；历史 EasyTier UDP 22020 已确认没有监听后端，FRPC 随后按要求停用。
 
 17 个具体旧域名在切换前后状态一致；原已返回 502 的失效站点未在本次修复。Vaultwarden、New API 页面正常，EasyTier 页面保留 Basic Auth 401，WSS 升级为 101。IPv4 与首节点 IPv6 路径均验证；Hysteria2 IPv4 经原 UDP 转发的认证连接及代理 HTTPS 请求通过。
 

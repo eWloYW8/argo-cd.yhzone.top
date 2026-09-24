@@ -124,3 +124,8 @@ Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kube
 ## 保留域名的公网 IPv4 转发
 
 ali-sas 的 Kubernetes SNI 网关直接通过 EasyTier 转发到 `10.1.2.4:21443`，不再使用 FRPC 的 Caddy TCP 条目。EasyTier Web/WSS、New API、Vaultwarden 以及其他原 Caddy 站点的域名、端口和认证保持不变。旧域名的 TLS/HTTP 配置仍由原 Caddy 承载，未转换为每站点 Ingress。Hysteria2 的 UDP 30443 已由 Kubernetes 的 `hysteria2-udp-gateway` 接管，不再依赖 FRPC。
+
+
+## FRPC 停用
+
+FRPC Docker 容器已停止并设置 `restart=no`，Compose 服务加入 `disabled-manual-start` profile，容器和配置保留。HTTPS/WSS 及 Hysteria2 UDP 公网转发均已由 Kubernetes 管理；历史 EasyTier UDP 22020 没有后端监听，不再运行其转发。原配置与容器信息备份位于 `~/k8s/storage/backups/frpc-disabled-*/`（包含敏感凭据，不入 Git）。
