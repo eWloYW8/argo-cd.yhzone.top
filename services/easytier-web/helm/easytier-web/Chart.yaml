@@ -1,0 +1,5 @@
+apiVersion: v2
+name: easytier-web
+version: 0.1.0
+appVersion: "2.5.0-88a45d11"
+type: application
