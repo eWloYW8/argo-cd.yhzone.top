@@ -39,5 +39,5 @@ backends:
     memory: 256Mi
 legacyIngress:
   host: newapi.d.yhzone.top
-  expose: false
-  publishDNS: false
+  expose: true
+  publishDNS: true

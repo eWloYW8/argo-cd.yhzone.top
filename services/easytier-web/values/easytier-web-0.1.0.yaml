@@ -17,8 +17,8 @@ mounts:
   mountPath: /app/data
   readOnly: false
 publicIngress:
-  expose: false
-  publishDNS: false
+  expose: true
+  publishDNS: true
   routes:
     web:
       host: easytier.yhzone.top
