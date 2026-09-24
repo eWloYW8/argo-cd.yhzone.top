@@ -18,3 +18,10 @@
 - `bootstrap/` contains only host/cluster bootstrap configuration.
 - Validate using `kubectl kustomize --enable-helm services/<service>` before pushing. Do not print rendered Secrets.
 - Never copy credentials or environment-specific networking from reference repositories.
+
+## Default image registry
+
+- Ordinary services include `../../components/image-prefix` in `components` to use `harbor.k8s.yhzone.top/<upstream>/<image>`.
+- Normalize short Docker Hub names to `docker.io/library/<image>` (or `docker.io/<organization>/<image>`) before prefixing; verify rendered images have exactly one Harbor prefix.
+- Bootstrap exceptions: Harbor and its database/setup Job, Traefik, cert-manager, ExternalDNS, local-path-provisioner, and K3s system components use upstream images to avoid circular dependencies.
+- Proxy projects and their total 30 GiB quota are declared in `services/harbor/resources/cache-config.json`; see that service README before adding a registry.

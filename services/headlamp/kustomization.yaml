@@ -11,3 +11,5 @@ helmCharts:
   namespace: headlamp
   includeCRDs: true
   valuesFile: values/headlamp-0.45.0.yaml
+components:
+- ../../components/image-prefix

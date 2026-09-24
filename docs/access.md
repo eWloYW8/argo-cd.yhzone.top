@@ -3,8 +3,8 @@
 | 服务 | 当前内网地址 |
 | --- | --- |
 | Headlamp | https://headlamp.k8s.yhzone.top |
-| Argo CD | https://argocd.k8s.yhzone.top |
-| Harbor | https://harbor.yhzone.top |
+| Argo CD | https://argocd.k8s.yhzone.top 或 https://argo-cd.k8s.yhzone.top |
+| Harbor | https://harbor.k8s.yhzone.top |
 
 ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网入口尚未配置，原 Docker Caddy 的 20443 保留。
 
@@ -34,20 +34,19 @@ kubectl --context yihao -n harbor get secret harbor-bootstrap -o jsonpath='{.dat
 
 ## 镜像缓存
 
-`dockerhub` 为私有 Docker Hub 代理缓存项目，配额 30 GiB，匿名访问上游 Docker Hub。需先登录 Harbor：
+普通服务采用 `harbor.k8s.yhzone.top/<上游 registry>/<镜像>` 前缀，Argo CD 和 Headlamp 已接入。公共上游缓存允许匿名拉取，例如：
 
 ```sh
-docker login harbor.yhzone.top
-docker pull harbor.yhzone.top/dockerhub/library/busybox:1.37.0
+docker pull harbor.k8s.yhzone.top/docker.io/library/busybox:1.37.0
 ```
 
-目前不改写 containerd 或其他节点的全局镜像源；使用上述前缀明确选择缓存。缓存项目由 `harbor` Argo CD 应用的幂等 PostSync Job 配置。
+管理账号为 admin；需要管理或访问原私有 dockerhub 项目时执行 `docker login harbor.k8s.yhzone.top`。原私有项目及镜像保留，旧域名保留兼容入口。缓存项目配额总和为 30 GiB，按上游分配；配置及使用方式见 [Harbor 说明](../services/harbor/README.md)。Kustomize 为普通服务统一添加前缀，节点全局镜像源未改写，启动基础组件仍直连上游。
 
-镜像 PVC 请求 30 GiB、PostgreSQL 5 GiB、Redis 1 GiB、任务日志 1 GiB，均位于 `~/k8s/storage/pvc`。本地 PVC 大小不是文件系统硬配额；30 GiB 是 Harbor 项目的逻辑镜像配额，数据库、日志和上传临时文件另计。达到配额后需通过保留策略/垃圾回收释放空间，不保证自动 LRU 淘汰。Trivy 扫描器暂未启用。
+registry PVC 仍为 30 GiB、PostgreSQL 5 GiB、Redis 1 GiB、任务日志 1 GiB，均位于 `~/k8s/storage/pvc`。本地 PVC 大小不是文件系统硬配额。缓存需要保留策略/垃圾回收，不保证自动 LRU 淘汰。Trivy 暂未启用。
 
 ## 后续公网入口
 
-公网仅开放指定服务，外部端口 20443，不能直接把内网全部域名通配转发出去。Harbor 当前 externalURL 为 `https://harbor.yhzone.top`。部署公网 `:20443` 时需统一更新其 externalURL，并提供内网可达的同端口入口或其他经验证的认证转发方案；仅做端口映射可能导致 registry token realm 和重定向地址不匹配。
+公网仅开放指定服务，外部端口 20443，不能直接把内网全部域名通配转发出去。Harbor 当前 externalURL 为 `https://harbor.k8s.yhzone.top`。部署公网 `:20443` 时需统一更新其 externalURL，并提供内网可达的同端口入口或其他经验证的认证转发方案；仅做端口映射可能导致 registry token realm 和重定向地址不匹配。
 
 ## 凭据恢复
 

@@ -53,7 +53,7 @@ expose:
     annotations: {}
     labels: {}
     sourceRanges: []
-externalURL: https://harbor.yhzone.top
+externalURL: https://harbor.k8s.yhzone.top
 persistence:
   enabled: true
   resourcePolicy: keep
