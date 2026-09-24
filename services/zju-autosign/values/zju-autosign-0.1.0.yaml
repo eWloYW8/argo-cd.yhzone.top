@@ -1,0 +1,3 @@
+# Hosted private Harbor project; shared component adds the registry prefix.
+image: zju-autosign/app@sha256:f1c9e458628fd65439c34f01a6a4d7a17eb72f670ffd5548fcf0bd297f33ff65
+nodeName: yihao-pve-debian

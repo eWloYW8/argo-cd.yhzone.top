@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: zju-autosign
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: zju-autosign
+  version: 0.1.0
+  releaseName: zju-autosign
+  namespace: zju-autosign
+  valuesFile: values/zju-autosign-0.1.0.yaml
+components:
+- ../../components/image-prefix

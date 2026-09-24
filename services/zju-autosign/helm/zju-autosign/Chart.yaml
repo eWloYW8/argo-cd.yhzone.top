@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zju-autosign
+description: Continuous ZJU rollcall worker
+type: application
+version: 0.1.0
+appVersion: 765f68f3-local

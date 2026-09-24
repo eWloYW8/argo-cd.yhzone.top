@@ -16,6 +16,7 @@ services/
   external-dns-public/     # 公网 A/AAAA 的独立 DNS 控制器
   local-path-provisioner/  # 本地存储
   zjulibbooking/           # 本地 Helm Chart + 图书馆预约服务
+  zju-autosign/            # 本地 Helm Chart + 后台签到轮询
 clusters/yihao/             # 根 Application、ApplicationSet
 bootstrap/                 # K3s、LXC、宿主机引导
 docs/                      # 访问、恢复等运维说明
@@ -79,3 +80,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 公网服务和 NodePublicIPv6 手工地址资源的管理见 [公网入口说明](services/public-network/README.md)。其余内网服务未公开。
 
 图书馆预约服务公网地址为 `https://zjulib.yhzone.top:20443`，旧域名入口已移除。镜像、内存任务限制及回退说明见 [ZJULibBooking](services/zjulibbooking/README.md)。
+
+后台签到程序 [ZJU-Autosign](services/zju-autosign/README.md) 以单副本运行，无网页或公网入口，凭据由 Secret 提供。
