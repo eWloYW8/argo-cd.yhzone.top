@@ -42,4 +42,4 @@ spec:
 
 Ingress、后端 Service 和 TLS Secret 位于同一个 namespace。cert-manager 根据 Ingress 自动创建每服务证书并使用 Cloudflare DNS-01 签发、续期；Traefik 监听 Secret 变化自动加载。ExternalDNS 从 Ingress 自动管理域名，无需再给后端 Service 添加 DNS 注解。
 
-只有 HTTPS 443 入口，没有 HTTP 80 重定向。公网 20443 尚未接入；当前域名及 Harbor externalURL 保持不变。Argo CD CLI 经此 HTTP 后端入口使用 `--grpc-web`。
+只有 HTTPS 443 入口，没有 HTTP 80 重定向。公网 20443 由独立的 `public-network` 服务承载，不共享此内网控制器。Argo CD CLI 经此 HTTP 后端入口使用 `--grpc-web`。

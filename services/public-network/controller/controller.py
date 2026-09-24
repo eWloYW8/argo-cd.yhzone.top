@@ -111,7 +111,7 @@ def haproxy_config(hosts):
              '  timeout client 1h', '  timeout server 1h',
              'frontend tls', '  bind ":::${PUBLIC_PORT}" v4v6',
              '  tcp-request inspect-delay 5s',
-             '  tcp-request content reject if { req.ssl_sni -m end .k8s.yhzone.top }',
+             r'  tcp-request content reject if { req.ssl_sni -m reg -i \.k8s\.yhzone\.top\.?$ }',
              '  tcp-request content accept if { req.ssl_hello_type 1 }']
     if hosts:
         lines.extend(['  acl kubernetes_public req.ssl_sni -i ' + ' '.join(hosts),

@@ -6,7 +6,7 @@
 | Argo CD | https://argo-cd.k8s.yhzone.top |
 | Harbor | https://harbor.k8s.yhzone.top |
 
-ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网入口尚未配置，原 Docker Caddy 的 20443 保留。
+ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网 20443 由独立 SNI/Traefik 入口接管，原 Docker Caddy 与 FRP 移至本机 21443，由 SNI 层转发，原服务外部地址保持 20443。
 
 cert-manager 根据 Ingress 注解自动创建每服务的 Certificate，使用 Let's Encrypt ACME 和 Cloudflare DNS-01。TLS Secret 保存在各服务 namespace，Traefik 自动加载更新，无需手写 Caddyfile 或定时重载脚本。DNS 自检使用 DoH。新增服务见 [Ingress 配置](../services/traefik/README.md)。
 
@@ -40,13 +40,22 @@ kubectl --context yihao -n harbor get secret harbor-bootstrap -o jsonpath='{.dat
 docker pull harbor.k8s.yhzone.top/docker.io/library/busybox:1.37.0
 ```
 
-管理账号为 admin；需要管理或访问原私有 dockerhub 项目时执行 `docker login harbor.k8s.yhzone.top`。原私有项目及镜像保留，旧域名保留兼容入口。缓存项目配额总和为 30 GiB，按上游分配；配置及使用方式见 [Harbor 说明](../services/harbor/README.md)。Kustomize 为普通服务统一添加前缀，节点全局镜像源未改写，启动基础组件仍直连上游。
+管理账号为 admin；需要管理或访问原私有 dockerhub 项目时执行 `docker login harbor.k8s.yhzone.top`。原私有项目及镜像保留，公网使用 `harbor.yhzone.top:20443`。缓存项目配额总和为 30 GiB，按上游分配；配置及使用方式见 [Harbor 说明](../services/harbor/README.md)。Kustomize 为普通服务统一添加前缀，节点全局镜像源未改写，启动基础组件仍直连上游。
 
 registry PVC 仍为 30 GiB、PostgreSQL 5 GiB、Redis 1 GiB、任务日志 1 GiB，均位于 `~/k8s/storage/pvc`。本地 PVC 大小不是文件系统硬配额。缓存需要保留策略/垃圾回收，不保证自动 LRU 淘汰。Trivy 暂未启用。
 
-## 后续公网入口
+## 公网入口
 
-公网仅开放指定服务，外部端口 20443，不能直接把内网全部域名通配转发出去。Harbor 当前 externalURL 为 `https://harbor.k8s.yhzone.top`。部署公网 `:20443` 时需统一更新其 externalURL，并提供内网可达的同端口入口或其他经验证的认证转发方案；仅做端口映射可能导致 registry token realm 和重定向地址不匹配。
+目前公开 Harbor：`https://harbor.yhzone.top:20443`。A 为 ali-sas 公网 IPv4 `101.37.69.162`，AAAA 由手工 NodePublicIPv6 资源及实际服务后端节点决定。其余内网域名不在公网入口发布，公网 SNI 层拒绝 `*.k8s.yhzone.top`。
+
+Harbor externalURL 和认证 realm 为 `https://harbor.yhzone.top:20443`；内网镜像前缀仍为 `harbor.k8s.yhzone.top`。两个节点已验证此组合的镜像拉取。公网客户端使用：
+
+```sh
+docker login harbor.yhzone.top:20443
+docker pull harbor.yhzone.top:20443/docker.io/library/busybox:1.37.0
+```
+
+公共缓存项目支持匿名拉取；私有项目需登录。新增公开服务、IPv6 手工登记/撤销及旧服务转发说明见 [公网入口](../services/public-network/README.md)。
 
 ## 凭据恢复
 

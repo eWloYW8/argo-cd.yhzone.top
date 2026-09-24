@@ -2,7 +2,7 @@
 
 Helm Chart 1.22.0 / ExternalDNS 0.22.0，由 ApplicationSet 自动部署。
 
-只监听带 `dns.yhzone.top/managed: "true"` 注解的 Service / Ingress；域名限定为 `k8s.yhzone.top` 与 `harbor.yhzone.top`，Cloudflare zone 固定为 `yhzone.top`。采用 `sync` 策略及 TXT registry，owner 为 `yihao`、TXT 前缀为 `_external-dns.`，默认每分钟同步，也响应资源事件。
+只监听带 `dns.yhzone.top/managed: "true"` 注解的 Service / Ingress；域名限定为 `k8s.yhzone.top`，Cloudflare zone 固定为 `yhzone.top`。采用 `sync` 策略及 TXT registry，owner 为 `yihao`、TXT 前缀为 `_external-dns.`，默认每分钟同步，也响应资源事件。
 
 ## 服务声明
 
@@ -26,6 +26,6 @@ metadata:
 
 运行 `python3 services/external-dns/scripts/import-cloudflare.py`，从 cert-manager 的现有 Secret 安全复制凭据到 external-dns namespace。凭据不进入 Git；轮换后重新运行脚本并重启 ExternalDNS Deployment。Cloudflare token 需要该 zone 的 Zone Read / DNS Edit 权限。
 
-已有无 TXT 所有权的记录不会被自动接管。迁移时先核对现有目标，并为指定记录建立正确的 TXT owner；禁止使用 noop registry 或批量接管整个 zone。Harbor 原有 A 记录按此方式保留接管。
+已有无 TXT 所有权的记录不会被自动接管。迁移时先核对现有目标，并为指定记录建立正确的 TXT owner；禁止使用 noop registry 或批量接管整个 zone。Harbor 公网域名现由独立 external-dns-public 管理，使用不同 TXT owner。
 
 参考：https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/cloudflare/

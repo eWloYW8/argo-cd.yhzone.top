@@ -12,6 +12,8 @@ services/
   harbor/                  # Helm + PostgreSQL + 缓存初始化任务
   headlamp/                # Helm + 登录 RBAC
   traefik/                 # Helm + 标准 Ingress 内网 HTTPS 入口
+  public-network/          # 公网 SNI/Ingress + 手工节点 IPv6 授权
+  external-dns-public/     # 公网 A/AAAA 的独立 DNS 控制器
   local-path-provisioner/  # 本地存储
 clusters/yihao/             # 根 Application、ApplicationSet
 bootstrap/                 # K3s、LXC、宿主机引导
@@ -50,7 +52,7 @@ kubectl kustomize clusters/yihao
 - https://argo-cd.k8s.yhzone.top
 - https://harbor.k8s.yhzone.top
 
-DNS 指向 EasyTier `10.1.2.4`，仅内网 443，公网入口尚未配置。登录和缓存用法见 [访问说明](docs/access.md)。
+内网 DNS 指向 EasyTier `10.1.2.4:443`。Harbor 已开放公网 `https://harbor.yhzone.top:20443`：IPv4 经 ali-sas 中转，IPv6 使用手工授权节点地址。登录和缓存用法见 [访问说明](docs/access.md)。
 
 ## 引导与恢复
 
@@ -71,3 +73,5 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 普通服务默认采用 [Harbor 镜像前缀](services/harbor/README.md)，通过共享 Kustomize component 管理；基础启动组件保留直连上游。Argo CD 访问地址为 `https://argo-cd.k8s.yhzone.top`。
 
 第二个节点 `ali-sas`（EasyTier `10.1.2.2`）作为 worker 加入，部署与资源限制见 [节点说明](bootstrap/nodes/ali-sas/README.md)。
+
+公网服务和 NodePublicIPv6 手工地址资源的管理见 [公网入口说明](services/public-network/README.md)。其余内网服务未公开。

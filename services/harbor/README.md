@@ -1,6 +1,6 @@
 # Harbor 镜像前缀
 
-默认入口为 `https://harbor.k8s.yhzone.top`，旧 `harbor.yhzone.top` 保留为兼容入口；登录账号和数据不变。Harbor externalURL 与 registry token realm 使用新域名。
+内网入口为 `https://harbor.k8s.yhzone.top`，公网入口为 `https://harbor.yhzone.top:20443`。登录账号和数据不变。Harbor externalURL 与 registry token realm 统一为公网地址；两节点均已验证通过内网前缀拉取并访问公网认证地址。公网 A 指向 ali-sas，AAAA 跟随经手工 IPv6 资源授权的服务节点。
 
 参考 zjusct 仓库，用 Kustomize PrefixTransformer 在渲染时添加 `harbor.k8s.yhzone.top/`。共用组件位于 `components/image-prefix/`，覆盖普通工作负载、initContainers、CronJob 和 Pod 的镜像字段。
 
@@ -52,3 +52,5 @@ kubectl --context yihao -n harbor get secret harbor-bootstrap \
 ```
 
 用户名为 admin；不要将密码写入 Git。
+
+公网路由采用独立 Ingress/Service，见 [公网入口](../public-network/README.md)。公网可拉取公共缓存项目，管理入口受 Harbor 登录保护；未来需要限制公开内容时应调整项目权限或增加入口访问控制。

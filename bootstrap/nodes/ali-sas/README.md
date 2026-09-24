@@ -8,7 +8,7 @@
 
 ## 资源与存储
 
-已有 frps、Docker、EasyTier 和云平台代理等服务，加入后空余内存约 180 MiB。为现有系统服务预留 1280 MiB、K3s/kubelet 预留 256 MiB，可调度内存约 147 MiB；CPU 预留合计 300m。仅适合轻量工作负载，预留值是调度预算，不能代替应用内存 requests/limits。扩大负载前先检查实际内存余量并调整配置。
+已有 frps、Docker、EasyTier 和云平台代理等服务，加入后空余内存约 180 MiB。为现有系统服务预留 1280 MiB、K3s/kubelet 预留 256 MiB，可调度内存约 147 MiB；CPU 预留合计 300m。公网入口 Pod 已请求 64 MiB，剩余调度预算约 83 MiB。仅适合轻量工作负载，预留值是调度预算，不能代替应用内存 requests/limits。扩大负载前先检查实际内存余量并调整配置。
 
 `yihao-local` 仍只在首节点创建持久卷，本节点不提供默认本地持久化存储；已有数据和入口未迁移。
 
@@ -38,3 +38,5 @@ sudo k3s ctr -n k8s.io images export --platform linux/amd64 /tmp/pause.tar \
 ## 已验证
 
 2026-09-24：两个节点 Ready；新节点成功从 Harbor 拉取镜像；Pod 双向跨节点 HTTP 与 64 KiB 传输、集群 DNS、跨节点 Harbor ClusterIP 服务访问、kubectl exec 均通过。临时测试 namespace 与调度 taint 已清理。
+
+本节点同时承担公网 IPv4 101.37.69.162:20443 的 SNI/Ingress 入口。旧 FRP Caddy 映射移到 21443，公网入口转交旧流量；基础入口镜像归档为 `/var/lib/rancher/k3s/agent/images/public-edge.tar`，不依赖 Harbor 启动。

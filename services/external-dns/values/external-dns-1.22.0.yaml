@@ -122,7 +122,6 @@ txtPrefix: _external-dns.
 txtSuffix: null
 domainFilters:
 - k8s.yhzone.top
-- harbor.yhzone.top
 excludeDomains: []
 labelFilter: null
 annotationFilter: dns.yhzone.top/managed=true
