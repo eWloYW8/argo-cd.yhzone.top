@@ -3,7 +3,7 @@
 | 服务 | 当前内网地址 |
 | --- | --- |
 | Headlamp | https://headlamp.k8s.yhzone.top |
-| Argo CD | https://argocd.k8s.yhzone.top 或 https://argo-cd.k8s.yhzone.top |
+| Argo CD | https://argo-cd.k8s.yhzone.top |
 | Harbor | https://harbor.k8s.yhzone.top |
 
 ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网入口尚未配置，原 Docker Caddy 的 20443 保留。

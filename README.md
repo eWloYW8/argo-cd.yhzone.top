@@ -47,7 +47,7 @@ kubectl kustomize clusters/yihao
 ## 访问
 
 - https://headlamp.k8s.yhzone.top
-- https://argocd.k8s.yhzone.top
+- https://argo-cd.k8s.yhzone.top
 - https://harbor.k8s.yhzone.top
 
 DNS 指向 EasyTier `10.1.2.4`，仅内网 443，公网入口尚未配置。登录和缓存用法见 [访问说明](docs/access.md)。
@@ -68,4 +68,4 @@ DNS 自动管理与服务注解用法见 [ExternalDNS](services/external-dns/REA
 
 新增 HTTP 服务使用各自目录中的 Ingress，自动完成路由、证书及 DNS 配置，见 [入口说明](services/traefik/README.md)。
 
-普通服务默认采用 [Harbor 镜像前缀](services/harbor/README.md)，通过共享 Kustomize component 管理；基础启动组件保留直连上游。Argo CD 同时支持 `https://argo-cd.k8s.yhzone.top`。
+普通服务默认采用 [Harbor 镜像前缀](services/harbor/README.md)，通过共享 Kustomize component 管理；基础启动组件保留直连上游。Argo CD 访问地址为 `https://argo-cd.k8s.yhzone.top`。
