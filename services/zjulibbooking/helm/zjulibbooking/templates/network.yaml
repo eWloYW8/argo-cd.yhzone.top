@@ -32,6 +32,9 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     {{- if eq $scope "public" }}
     networking.yhzone.top/publish-dns: 'true'
+    {{- if $.Values.publicBasicAuth.enabled }}
+    traefik.ingress.kubernetes.io/router.middlewares: {{ printf "%s-%s-public-auth@kubernetescrd" $.Release.Namespace $.Release.Name | quote }}
+    {{- end }}
     {{- else }}
     dns.yhzone.top/managed: 'true'
     external-dns.kubernetes.io/target: 10.1.2.4

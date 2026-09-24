@@ -4,3 +4,7 @@ nodeName: yihao-pve-debian
 hosts:
   internal: zjulib.k8s.yhzone.top
   public: zjulib.yhzone.top
+
+publicBasicAuth:
+  enabled: true
+  secretName: public-basic-auth

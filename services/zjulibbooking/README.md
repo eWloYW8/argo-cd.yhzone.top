@@ -17,3 +17,16 @@ Migration source and rollback container remain at `~/docker/ZJULibBooking`; the 
 ## Migration verification (2026-09-24)
 
 Argo CD Synced/Healthy; one Ready Pod; both certificates Ready. Page and health endpoint returned HTTP 200 with system CA verification over the internal ingress, ali-sas public IPv4 and the first node global IPv6 address. IPv6 was tested from the first node, not from an independent external IPv6 network. Cloudflare contains internal A=10.1.2.4, public A=101.37.69.162 and public AAAA=2001:da8:e000:731a:be24:11ff:fe21:c6f6. Legacy health remained HTTP 200 after the Docker container was stopped. No actual library booking was submitted during verification.
+
+## Public Basic Auth
+
+Both public hostnames require the same Basic Auth account (`yihao`). The new Ingress references a Traefik Middleware backed by `zjulibbooking/public-basic-auth` (bcrypt `users` data, no plaintext); the legacy Caddy site uses the same bcrypt entry. The internal hostname remains accessible without this extra authentication. Harbor authentication is unchanged. The middleware strips the Authorization header before forwarding to the booking application.
+
+Credentials are provisioned outside Git. Restore the Secret from a cluster backup, or import the current legacy site hash without printing it:
+
+```sh
+python3 services/public-network/scripts/import-basic-auth.py \
+  --site https://zjulib.d.yhzone.top:21443 --namespace zjulibbooking
+```
+
+When rotating credentials, update both the Kubernetes Secret and the legacy Caddy site's bcrypt entry, then reload Caddy. No booking Pod restart is required.

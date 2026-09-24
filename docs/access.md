@@ -71,3 +71,5 @@ Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 services/ce
 ## ZJULibBooking
 
 新公网地址 `https://zjulib.yhzone.top:20443`；原 `https://zjulib.d.yhzone.top:20443` 通过旧 Caddy 转发至 Kubernetes 内网 Ingress，保留浏览器原站点表单。应用无数据库，任务仅在进程内存中，Pod 重启后需重新提交任务；浏览器 localStorage 不会自动迁移到新域名。镜像使用私有 Harbor 项目和独立只读 robot Secret，恢复集群时还需恢复 `zjulibbooking/harbor-pull`。
+
+ZJULibBooking 的新旧公网域名均需 Basic Auth，用户名为 `yihao`，密码使用用户指定值，仅保存 bcrypt 哈希。内网域名不增加此认证；Harbor 沿用原生认证。

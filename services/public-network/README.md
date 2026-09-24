@@ -116,3 +116,9 @@ spec:
 - 两个节点通过内网 Harbor 前缀拉取镜像，并使用新的公网认证 realm 成功。
 
 DNS 不是即时故障切换，TTL/客户端缓存及地址变更可能延迟；IPv6/IPv4 连接选择由客户端决定。公网入口与控制平面仍不是跨故障域高可用。
+
+## Optional public Basic Auth
+
+The public Traefik enables the Kubernetes CRD provider to resolve authentication Middleware resources. It retains the public exposure label selector, class `traefik-public`, and disabled cross-namespace references. Standard Ingress remains the service routing interface. The public chart owns the Traefik CRDs.
+
+ZJULibBooking opts into a namespace-local Basic Auth Middleware. There is no global authentication middleware: Harbor retains its native registry authentication. Secret hashes are bootstrapped outside Git; `scripts/import-basic-auth.py` can copy one explicitly selected Caddy site's bcrypt credentials into a namespace-local Secret. It does not print credentials.
