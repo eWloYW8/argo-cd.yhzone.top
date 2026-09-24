@@ -91,6 +91,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       nodeSelector:
+        node.yhzone.top/role: core
         kubernetes.io/os: linux
       containers:
       - name: local-path-provisioner

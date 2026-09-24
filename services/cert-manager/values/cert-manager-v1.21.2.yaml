@@ -1,7 +1,8 @@
 # Full defaults from upstream cert-manager v1.21.2, with yihao overrides.
 global:
   imagePullSecrets: []
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   commonLabels: {}
   priorityClassName: ''
   rbac:

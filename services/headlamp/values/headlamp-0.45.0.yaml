@@ -113,7 +113,8 @@ resources:
     memory: 128Mi
   limits:
     memory: 512Mi
-nodeSelector: {}
+nodeSelector:
+  node.yhzone.top/role: core
 tolerations: []
 affinity: {}
 hostAliases: []
