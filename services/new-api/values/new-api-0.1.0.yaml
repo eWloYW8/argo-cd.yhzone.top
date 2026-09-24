@@ -1,6 +1,6 @@
 image: new-api/app@sha256:dc61e20cb85d5f5e9d94062cb18be863cdef8faea61509461296cd30aa651575
-replicas: 0
-publishDNS: false
+replicas: 1
+publishDNS: true
 runtimeEnv: true
 uid: 0
 readOnlyRootFilesystem: false
