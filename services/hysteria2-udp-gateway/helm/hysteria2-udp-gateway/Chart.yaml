@@ -1,0 +1,5 @@
+apiVersion: v2
+name: hysteria2-udp-gateway
+version: 0.1.0
+appVersion: v3.7.13
+type: application

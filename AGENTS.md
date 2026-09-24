@@ -24,7 +24,7 @@
 - Ordinary services include `../../components/image-prefix` in `components` to use `harbor.k8s.yhzone.top/<upstream>/<image>`.
 - Normalize short Docker Hub names to `docker.io/library/<image>` (or `docker.io/<organization>/<image>`) before prefixing; verify rendered images have exactly one Harbor prefix.
 - Locally built application images may use a private hosted Harbor project: specify `<project>/<image>@sha256:<digest>` before the prefix component and reference a namespace-scoped pull-only robot Secret; never push into proxy-cache projects.
-- Bootstrap exceptions: Harbor and its database/setup Job, Traefik (internal/public), public-network controller/SNI edge, cert-manager, ExternalDNS (internal/public), local-path-provisioner, and K3s system components use upstream images to avoid circular dependencies.
+- Bootstrap exceptions: Harbor and its database/setup Job, Traefik (internal/public), public-network controller/SNI edge and hysteria2-udp-gateway, cert-manager, ExternalDNS (internal/public), local-path-provisioner, and K3s system components use upstream images to avoid circular dependencies.
 - Proxy projects and their total 30 GiB quota are declared in `services/harbor/resources/cache-config.json`; see that service README before adding a registry.
 
 ## Public networking

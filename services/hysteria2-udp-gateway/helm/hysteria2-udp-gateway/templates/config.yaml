@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+data:
+  udp.yaml: |
+    udp:
+      routers:
+        hysteria:
+          entryPoints: [hysteria]
+          service: hysteria
+      services:
+        hysteria:
+          loadBalancer:
+            servers:
+            - address: {{ .Values.backend | quote }}

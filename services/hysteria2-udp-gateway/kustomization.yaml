@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: public-network
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: hysteria2-udp-gateway
+  version: 0.1.0
+  releaseName: hysteria2-udp-gateway
+  namespace: public-network
+  valuesFile: values/hysteria2-udp-gateway-0.1.0.yaml
+# Public network bootstrap: same upstream image already cached on ali-sas.
