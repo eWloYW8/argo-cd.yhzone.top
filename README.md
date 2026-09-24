@@ -11,5 +11,3 @@
 ```sh
 kubectl kustomize --enable-helm services/<应用>
 ```
-
-需要安装 Helm。版本固定在配置中，提交遵循 Conventional Commits。凭据和运维资料不在本公开仓库保存。
