@@ -25,7 +25,7 @@ hosts:
   public: newapi.yhzone.top
 publicBasicAuth:
   enabled: false
-backendReplicas: 0
+backendReplicas: 1
 backends:
   postgres:
     image: new-api/postgres@sha256:45e24a31a2752f46865cfc45a8bc8220e60cac0008f32eb219ec308bc491e681
