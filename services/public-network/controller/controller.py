@@ -154,7 +154,8 @@ def reconcile(api):
     addresses = authorized_addresses(resources, nodes)
     label = GROUP + '/public-gateway'
     for name, node in nodes.items():
-        wanted = 'true' if name == IPV4_NODE or name in addresses else None
+        # Retain enrolled gateways for cached DNS and legacy connections; removal is an operator action.
+        wanted = 'true' if name == IPV4_NODE or name in addresses else node['metadata'].get('labels', {}).get(label)
         if node['metadata'].get('labels', {}).get(label) != wanted:
             api.call('PATCH', '/api/v1/nodes/' + name, {'metadata': {'labels': {label: wanted}}})
     pods = api.listing('/api/v1/namespaces/' + NS + '/pods?labelSelector=app.kubernetes.io/name%3Dtraefik')

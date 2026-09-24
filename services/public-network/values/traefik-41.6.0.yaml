@@ -29,10 +29,10 @@ deployment:
     - /run-edge/edge-run.sh
     env:
     - name: PUBLIC_PORT
-      value: '22443'
+      value: '20443'
     ports:
     - name: public-edge
-      containerPort: 22443
+      containerPort: 20443
     volumeMounts:
     - name: routes
       mountPath: /routes
@@ -54,7 +54,7 @@ deployment:
         - ALL
     readinessProbe:
       tcpSocket:
-        port: 22443
+        port: 20443
       initialDelaySeconds: 3
       periodSeconds: 5
   additionalVolumes:
