@@ -5,8 +5,9 @@
 | Headlamp | https://headlamp.k8s.yhzone.top |
 | Argo CD | https://argo-cd.k8s.yhzone.top |
 | Harbor | https://harbor.k8s.yhzone.top |
+| ZJULibBooking | https://zjulib.k8s.yhzone.top |
 
-ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，三个服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网 20443 由独立 SNI/Traefik 入口接管，原 Docker Caddy 与 FRP 移至本机 21443，由 SNI 层转发，原服务外部地址保持 20443。
+ExternalDNS 从各服务 Ingress 管理 Cloudflare DNS-only A 记录，内网服务域名均指向 `10.1.2.4`；原有 `*.k8s.yhzone.top` 泛解析保留。Traefik 以 hostNetwork 运行，仅监听首节点 EasyTier 地址 `10.1.2.4:443`，根据标准 Ingress 转发到集群 Service。需要加入 EasyTier 或有到该地址的路由才能访问。公网 20443 由独立 SNI/Traefik 入口接管，原 Docker Caddy 与 FRP 移至本机 21443，由 SNI 层转发，原服务外部地址保持 20443。
 
 cert-manager 根据 Ingress 注解自动创建每服务的 Certificate，使用 Let's Encrypt ACME 和 Cloudflare DNS-01。TLS Secret 保存在各服务 namespace，Traefik 自动加载更新，无需手写 Caddyfile 或定时重载脚本。DNS 自检使用 DoH。新增服务见 [Ingress 配置](../services/traefik/README.md)。
 
@@ -46,7 +47,7 @@ registry PVC 仍为 30 GiB、PostgreSQL 5 GiB、Redis 1 GiB、任务日志 1 GiB
 
 ## 公网入口
 
-目前公开 Harbor：`https://harbor.yhzone.top:20443`。A 为 ali-sas 公网 IPv4 `101.37.69.162`，AAAA 由手工 NodePublicIPv6 资源及实际服务后端节点决定。其余内网域名不在公网入口发布，公网 SNI 层拒绝 `*.k8s.yhzone.top`。
+目前公开 Harbor：`https://harbor.yhzone.top:20443`，以及 ZJULibBooking：`https://zjulib.yhzone.top:20443`。A 为 ali-sas 公网 IPv4 `101.37.69.162`，AAAA 由手工 NodePublicIPv6 资源及实际服务后端节点决定。其余内网域名不在公网入口发布，公网 SNI 层拒绝 `*.k8s.yhzone.top`。
 
 Harbor externalURL 和认证 realm 为 `https://harbor.yhzone.top:20443`；内网镜像前缀仍为 `harbor.k8s.yhzone.top`。两个节点已验证此组合的镜像拉取。公网客户端使用：
 
@@ -66,3 +67,7 @@ Cloudflare 凭据从现有 Caddy compose 环境读取，用 `python3 services/ce
 ## 验证记录
 
 所有 Argo CD 应用 Synced / Healthy；三个 HTTPS 地址通过系统 CA 校验。Harbor 登录及 `dockerhub/library/busybox:1.37.0` 实际拉取成功，registry API 确认缓存 artifact 已存在。入口已迁移为 Traefik + 每服务 Ingress，证书由各服务 Certificate 自动续期。
+
+## ZJULibBooking
+
+新公网地址 `https://zjulib.yhzone.top:20443`；原 `https://zjulib.d.yhzone.top:20443` 通过旧 Caddy 转发至 Kubernetes 内网 Ingress，保留浏览器原站点表单。应用无数据库，任务仅在进程内存中，Pod 重启后需重新提交任务；浏览器 localStorage 不会自动迁移到新域名。镜像使用私有 Harbor 项目和独立只读 robot Secret，恢复集群时还需恢复 `zjulibbooking/harbor-pull`。
