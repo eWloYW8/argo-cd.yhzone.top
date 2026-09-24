@@ -93,3 +93,9 @@ Hysteria2 为 UDP 服务，继续使用 30443 端口、既有域名和密码，I
 FunASR 实时接口为 `wss://funasr.yhzone.top:20443/v1/realtime`。ZhiyunTools 通过集群 Service 访问 FunASR，不依赖公网绕行。四个旧 `.d.yhzone.top` 入口已移除；共享泛解析仍用于其他旧服务，旧域名可能返回网关默认响应。原订阅/API 客户端需要改用新地址；浏览器原站点数据不会自动复制到新域名。
 
 持久数据均使用 `yihao-local` PVC，保存在 `~/k8s/storage/pvc/`。迁移前停写备份、原 Compose 配置及逐文件校验记录保存在 `~/k8s/storage/backups/migration-20260924/`（含敏感数据，不进入 Git）。原 Docker 数据与容器保留用于恢复。备份目前与业务数据同机。
+
+## New API 与 Sub2API
+
+New API 已迁移到 Kubernetes，原入口 **https://newapi.d.yhzone.top:20443** 保留；新增 https://newapi.yhzone.top:20443 和内网 https://newapi.k8s.yhzone.top。原认证、账号、API key、数据库及日志保留，旧入口经现有 Caddy 转接 Kubernetes。数据核验、备份和回退方法见 [New API](../services/new-api/README.md)。
+
+Sub2API 按要求仅停用 Docker 应用、PostgreSQL 和 Redis，未迁入 Kubernetes。容器自动重启已关闭，Compose 使用 `disabled-manual-start` profile。原数据保留；逻辑备份、冷备份及校验清单位于 `~/k8s/storage/backups/sub2api-disabled-20260924/`。其旧入口当前不提供服务，不能把停止状态误认为已迁移。
