@@ -15,9 +15,20 @@ spec:
   tls:
   - hosts:
     - argocd.k8s.yhzone.top
+    - argo-cd.k8s.yhzone.top
     secretName: argocd-ingress-tls
   rules:
   - host: argocd.k8s.yhzone.top
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80
+  - host: argo-cd.k8s.yhzone.top
     http:
       paths:
       - path: /
