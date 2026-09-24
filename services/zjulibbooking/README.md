@@ -4,7 +4,7 @@ Local Helm chart, deployed through the `zjulibbooking` Argo CD Application.
 
 - Public: https://zjulib.yhzone.top:20443
 - EasyTier: https://zjulib.k8s.yhzone.top
-- Legacy: https://zjulib.d.yhzone.top:20443 remains served by the legacy Caddy SNI fallback, proxying over verified HTTPS to the Kubernetes internal Ingress. This preserves the browser origin and its saved form values.
+- The legacy `zjulib.d.yhzone.top:20443` Caddy site has been removed. The shared `*.d.yhzone.top` DNS wildcard still supports unrelated Docker services; it does not provide a booking application route.
 
 The image is the original Docker runtime image (source revision `be0066188b5adfbf220d4d97e4a5db519f82aa45`), preserved in the private Harbor project `zjulibbooking` and pinned by digest. It is amd64 only. `harbor-pull` is an out-of-Git dockerconfigjson Secret backed by a project-scoped pull-only robot account. The normal image-prefix component adds `harbor.k8s.yhzone.top/`; this is a hosted image project, not an upstream proxy cache.
 
@@ -20,13 +20,6 @@ Argo CD Synced/Healthy; one Ready Pod; both certificates Ready. Page and health 
 
 ## Public Basic Auth
 
-Both public hostnames require the same Basic Auth account (`yihao`). The new Ingress references a Traefik Middleware backed by `zjulibbooking/public-basic-auth` (bcrypt `users` data, no plaintext); the legacy Caddy site uses the same bcrypt entry. The internal hostname remains accessible without this extra authentication. Harbor authentication is unchanged. The middleware strips the Authorization header before forwarding to the booking application.
+The public hostname `zjulib.yhzone.top` requires Basic Auth (account `yihao`). Its Ingress references a Traefik Middleware backed by `zjulibbooking/public-basic-auth` (bcrypt `users` data, no plaintext). The internal hostname remains accessible without this extra authentication. Harbor authentication is unchanged. The middleware strips the Authorization header before forwarding to the booking application.
 
-Credentials are provisioned outside Git. Restore the Secret from a cluster backup, or import the current legacy site hash without printing it:
-
-```sh
-python3 services/public-network/scripts/import-basic-auth.py \
-  --site https://zjulib.d.yhzone.top:21443 --namespace zjulibbooking
-```
-
-When rotating credentials, update both the Kubernetes Secret and the legacy Caddy site's bcrypt entry, then reload Caddy. No booking Pod restart is required.
+Credentials are provisioned outside Git. Restore `zjulibbooking/public-basic-auth` from a cluster backup. When rotating credentials, update its `users` key with a `username:bcrypt-hash` entry. No Caddy change or booking Pod restart is required. The retired Caddy site is no longer a credential source.
