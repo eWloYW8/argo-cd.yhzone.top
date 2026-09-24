@@ -4,3 +4,4 @@ resources:
 - serviceaccount.yaml
 - rolebinding.yaml
 - ingress.yaml
+- admin-token.yaml

@@ -22,6 +22,14 @@ kubectl --context yihao -n headlamp create token yihao-admin --duration=1h
 
 Headlamp 服务自身的 ServiceAccount 未授予 cluster-admin；用户需要主动登录。
 
+长期管理员 Token 的 Secret 声明由 Argo CD 管理（`headlamp/yihao-admin-token`），实际 Token 由 Kubernetes 生成，不进入 Git。读取方式：
+
+```sh
+kubectl --context yihao -n headlamp get secret yihao-admin-token -o jsonpath='{.data.token}' | base64 -d; echo
+```
+
+此 Token 无固定过期时间，拥有 cluster-admin 权限。撤销时先从 Git 移除该资源声明并等待同步，再删除集群中的 Secret，避免自愈重新创建。
+
 Argo CD 账号 `admin`，初始密码（修改后应删除初始密码 Secret）：
 
 ```sh

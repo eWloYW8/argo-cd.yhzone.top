@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: yihao-admin-token
+  namespace: headlamp
+  annotations:
+    kubernetes.io/service-account.name: yihao-admin
+# Kubernetes generates the credential; never commit data.token.
+type: kubernetes.io/service-account-token
