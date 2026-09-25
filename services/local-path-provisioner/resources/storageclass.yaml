@@ -43,3 +43,18 @@ allowedTopologies:
     values:
     - opiai20t-512
 volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: musepipro-512-local
+  annotations:
+    defaultVolumeType: local
+provisioner: rancher.io/local-path
+reclaimPolicy: Retain
+allowedTopologies:
+- matchLabelExpressions:
+  - key: kubernetes.io/hostname
+    values:
+    - musepipro-512
+volumeBindingMode: WaitForFirstConsumer

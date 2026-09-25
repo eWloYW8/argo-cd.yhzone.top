@@ -544,7 +544,11 @@ resources:
 affinity: {}
 nodeSelector:
   networking.yhzone.top/public-gateway: 'true'
-tolerations: []
+tolerations:
+- key: node.yhzone.top/arch
+  operator: Equal
+  value: riscv64
+  effect: NoSchedule
 topologySpreadConstraints: []
 priorityClassName: ''
 securityContext:

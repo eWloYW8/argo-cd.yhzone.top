@@ -145,6 +145,12 @@ data:
           "paths": [
             "/home/yihao/k8s/storage/pvc"
           ]
+        },
+        {
+          "node": "musepipro-512",
+          "paths": [
+            "/home/yihao/k8s/storage/pvc"
+          ]
         }
       ]
     }
@@ -161,5 +167,5 @@ data:
 
     rm -rf "${VOL_DIR}"'
   helperPod.yaml: "apiVersion: v1\nkind: Pod\nmetadata:\n  name: helper-pod\nspec:\n\
-    \  containers:\n  - name: helper-pod\n    image: \"rancher/mirrored-library-busybox:1.37.0\"\
+    \  containers:\n  - name: helper-pod\n    image: \"docker.io/library/busybox:1.37.0\"\
     \n    imagePullPolicy: IfNotPresent"
