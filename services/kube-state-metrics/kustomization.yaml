@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kube-state-metrics
+resources:
+- resources/namespace.yaml
+helmCharts:
+- name: kube-state-metrics
+  repo: https://prometheus-community.github.io/helm-charts
+  version: 8.5.0
+  releaseName: kube-state-metrics
+  namespace: kube-state-metrics
+  valuesFile: values/kube-state-metrics-8.5.0.yaml
+components:
+- ../../components/image-prefix

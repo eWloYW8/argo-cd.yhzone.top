@@ -1,0 +1,3 @@
+name: node-exporter
+namespace: node-exporter
+ignoreDifferences: []

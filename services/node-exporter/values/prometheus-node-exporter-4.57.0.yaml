@@ -1,0 +1,236 @@
+image:
+  registry: quay.io
+  repository: prometheus/node-exporter
+  tag: ''
+  distroless: false
+  pullPolicy: IfNotPresent
+  digest: ''
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: node-exporter
+revisionHistoryLimit: 10
+global:
+  imagePullSecrets: []
+  imageRegistry: ''
+kubeRBACProxy:
+  enabled: false
+  env: {}
+  image:
+    registry: quay.io
+    repository: brancz/kube-rbac-proxy
+    tag: v0.22.1
+    sha: ''
+    pullPolicy: IfNotPresent
+  extraArgs: []
+  containerSecurityContext: {}
+  port: 8100
+  listenHost: ':'
+  portName: http
+  enableHostPort: false
+  proxyEndpointsPort: 8888
+  enableProxyEndpointsHostPort: false
+  resources: {}
+  extraVolumeMounts: []
+  tls:
+    enabled: false
+    tlsClientAuth: false
+tlsSecret:
+  enabled: false
+  caItem: ''
+  certItem: tls.crt
+  keyItem: tls.key
+  secretName: prometheus-node-exporter-tls
+  volumeName: prometheus-node-exporter-tls
+service:
+  enabled: true
+  type: ClusterIP
+  clusterIP: ''
+  port: 9100
+  servicePort: ''
+  targetPort: 9100
+  portName: metrics
+  nodePort: null
+  listenOnAllInterfaces: false
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels: {}
+  ipDualStack:
+    enabled: false
+    ipFamilies:
+    - IPv6
+    - IPv4
+    ipFamilyPolicy: PreferDualStack
+  externalTrafficPolicy: ''
+  internalTrafficPolicy: ''
+networkPolicy:
+  enabled: false
+env: {}
+prometheus:
+  monitor:
+    enabled: false
+    additionalLabels: {}
+    namespace: ''
+    jobLabel: ''
+    podTargetLabels: []
+    targetLabels: []
+    scheme: http
+    basicAuth: {}
+    bearerTokenFile: null
+    tlsConfig: {}
+    proxyUrl: ''
+    selectorOverride: {}
+    attachMetadata:
+      node: false
+    relabelings: []
+    metricRelabelings: []
+    interval: ''
+    scrapeTimeout: 10s
+    apiVersion: ''
+    sampleLimit: 0
+    targetLimit: 0
+    labelLimit: 0
+    labelNameLengthLimit: 0
+    labelValueLengthLimit: 0
+  podMonitor:
+    enabled: false
+    namespace: ''
+    additionalLabels: {}
+    podTargetLabels: []
+    apiVersion: ''
+    selectorOverride: {}
+    attachMetadata:
+      node: false
+    jobLabel: ''
+    scheme: http
+    path: /metrics
+    basicAuth: {}
+    bearerTokenSecret: {}
+    tlsConfig: {}
+    authorization: {}
+    oauth2: {}
+    proxyUrl: ''
+    interval: ''
+    scrapeTimeout: ''
+    honorTimestamps: true
+    honorLabels: true
+    enableHttp2: ''
+    filterRunning: ''
+    followRedirects: ''
+    params: {}
+    relabelings: []
+    metricRelabelings: []
+    sampleLimit: 0
+    targetLimit: 0
+    labelLimit: 0
+    labelNameLengthLimit: 0
+    labelValueLengthLimit: 0
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+restartPolicy: null
+serviceAccount:
+  create: true
+  name: null
+  annotations: {}
+  imagePullSecrets: []
+  automountServiceAccountToken: false
+securityContext:
+  fsGroup: 65534
+  runAsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+rbac:
+  create: true
+endpoints: []
+hostNetwork: true
+hostUsers: null
+hostPID: true
+hostIPC: false
+hostRootFsMount:
+  enabled: true
+  mountPropagation: HostToContainer
+hostProcFsMount:
+  mountPropagation: ''
+hostSysFsMount:
+  mountPropagation: ''
+affinity: {}
+podAnnotations:
+  cluster-autoscaler.kubernetes.io/safe-to-evict: 'true'
+podLabels: {}
+commonLabels: {}
+daemonsetAnnotations: {}
+releaseLabel: false
+dnsPolicy: ''
+dnsConfig: {}
+nodeSelector:
+  kubernetes.io/os: linux
+terminationGracePeriodSeconds: null
+tolerations:
+- effect: NoSchedule
+  operator: Exists
+terminationMessageParams:
+  enabled: false
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+extraArgs:
+- --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/containerd/.+|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+- --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs|erofs)$
+extraHostVolumeMounts: []
+configmaps: []
+secrets: []
+namespaceOverride: ''
+sidecars: []
+sidecarVolumeMount: []
+sidecarHostVolumeMounts: []
+extraInitContainers: []
+permissionInitContainer:
+  image:
+    registry: quay.io
+    repository: prometheus/busybox
+    tag: latest
+    sha: ''
+    pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+    runAsNonRoot: false
+  fixes:
+    rapl: false
+    slabinfo: false
+  extraCommands: []
+livenessProbe:
+  failureThreshold: 3
+  httpGet:
+    httpHeaders: []
+    scheme: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+readinessProbe:
+  failureThreshold: 3
+  httpGet:
+    httpHeaders: []
+    scheme: http
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+verticalPodAutoscaler:
+  enabled: false
+  controlledResources: []
+  maxAllowed: {}
+  minAllowed: {}
+extraManifests: []
+extraVolumes: []
+extraVolumeMounts: []
+version: ''

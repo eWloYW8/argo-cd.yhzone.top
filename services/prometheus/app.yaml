@@ -1,0 +1,3 @@
+name: prometheus
+namespace: prometheus
+ignoreDifferences: []

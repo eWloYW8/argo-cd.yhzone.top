@@ -1,0 +1,3 @@
+name: kube-state-metrics
+namespace: kube-state-metrics
+ignoreDifferences: []

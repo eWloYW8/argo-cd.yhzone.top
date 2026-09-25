@@ -12,6 +12,8 @@ spec:
   - https://kubernetes-sigs.github.io/headlamp/
   - https://kubernetes-sigs.github.io/external-dns/
   - https://traefik.github.io/charts
+  - https://prometheus-community.github.io/helm-charts
+  - https://grafana-community.github.io/helm-charts
   destinations:
   - server: https://kubernetes.default.svc
     namespace: '*'
