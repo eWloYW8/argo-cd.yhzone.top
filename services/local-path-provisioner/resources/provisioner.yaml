@@ -151,6 +151,12 @@ data:
           "paths": [
             "/home/yihao/k8s/storage/pvc"
           ]
+        },
+        {
+          "node": "opi5",
+          "paths": [
+            "/home/yihao/k8s/storage/pvc"
+          ]
         }
       ]
     }

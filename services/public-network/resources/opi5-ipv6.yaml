@@ -1,0 +1,7 @@
+apiVersion: networking.yhzone.top/v1alpha1
+kind: NodePublicIPv6
+metadata:
+  name: opi5
+spec:
+  address: 2001:da8:e000:731a:fc87:fdff:fead:914d
+  enabled: true
