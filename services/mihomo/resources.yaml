@@ -143,6 +143,8 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     networking.yhzone.top/publish-dns: 'true'
+  labels:
+    networking.yhzone.top/exposure: public
 spec:
   ingressClassName: traefik-public
   tls:
