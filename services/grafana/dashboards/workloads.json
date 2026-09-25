@@ -309,5 +309,19 @@
       }
     }
   ],
-  "timezone": "browser"
+  "timezone": "browser",
+  "links": [
+    {
+      "title": "Nodes",
+      "type": "link",
+      "url": "/d/nodes/nodes",
+      "keepTime": true
+    },
+    {
+      "title": "Kubernetes workloads",
+      "type": "link",
+      "url": "/d/workloads/kubernetes-workloads",
+      "keepTime": true
+    }
+  ]
 }
