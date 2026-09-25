@@ -440,25 +440,25 @@
     {
       "title": "Node / ali-sas",
       "type": "link",
-      "url": "/d/node-ali-sas",
+      "url": "/d/node-exporter-full/node-exporter-full?var-ds_prometheus=prometheus&var-job=node-exporter&var-nodename=yihao-ali-sas&var-node=10.1.2.2%3A9100",
       "keepTime": true
     },
     {
       "title": "Node / n100",
       "type": "link",
-      "url": "/d/node-n100",
+      "url": "/d/node-exporter-full/node-exporter-full?var-ds_prometheus=prometheus&var-job=node-exporter&var-nodename=yihao-n100&var-node=10.1.2.25%3A9100",
       "keepTime": true
     },
     {
       "title": "Node / opiai20t-512",
       "type": "link",
-      "url": "/d/node-opiai20t-512",
+      "url": "/d/node-exporter-full/node-exporter-full?var-ds_prometheus=prometheus&var-job=node-exporter&var-nodename=yihao-opiai20t-512&var-node=10.1.2.14%3A9100",
       "keepTime": true
     },
     {
       "title": "Node / yihao-pve-debian",
       "type": "link",
-      "url": "/d/node-yihao-pve-debian",
+      "url": "/d/node-exporter-full/node-exporter-full?var-ds_prometheus=prometheus&var-job=node-exporter&var-nodename=yihao-pve-debian&var-node=10.1.2.4%3A9100",
       "keepTime": true
     }
   ]

@@ -258,7 +258,7 @@ dashboardProviders:
       orgId: 1
       folder: Kubernetes
       type: file
-      disableDeletion: true
+      disableDeletion: false
       editable: false
       options:
         path: /var/lib/grafana/dashboards/cluster

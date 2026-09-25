@@ -16,10 +16,7 @@ components:
 configMapGenerator:
 - name: grafana-dashboards
   files:
-  - dashboards/node-ali-sas.json
-  - dashboards/node-n100.json
-  - dashboards/node-opiai20t-512.json
-  - dashboards/node-yihao-pve-debian.json
+  - dashboards/node-exporter-full-1860-r45.json
   - dashboards/nodes.json
   - dashboards/workloads.json
 generatorOptions:
