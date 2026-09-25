@@ -3,7 +3,7 @@
   "title": "Node / yihao-pve-debian",
   "description": "Detailed metrics for this Kubernetes node. Hardware metrics reflect what its kernel/container exposes. Unsupported hardware panels are omitted.",
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "refresh": "30s",
   "timezone": "browser",
   "time": {
@@ -72,7 +72,7 @@
         "x": 0,
         "y": 1,
         "w": 12,
-        "h": 8
+        "h": 4
       },
       "targets": [
         {
@@ -91,18 +91,8 @@
         "overrides": []
       },
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
+        "cellHeight": "sm",
+        "showHeader": true
       }
     },
     {
@@ -117,8 +107,8 @@
       "gridPos": {
         "x": 12,
         "y": 1,
-        "w": 12,
-        "h": 8
+        "w": 4,
+        "h": 4
       },
       "targets": [
         {
@@ -145,7 +135,11 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "textMode": "auto"
+        "textMode": "auto",
+        "text": {
+          "titleSize": 12,
+          "valueSize": 24
+        }
       }
     },
     {
@@ -158,10 +152,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 9,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "targets": [
         {
@@ -188,7 +182,11 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "textMode": "auto"
+        "textMode": "auto",
+        "text": {
+          "titleSize": 12,
+          "valueSize": 24
+        }
       }
     },
     {
@@ -201,10 +199,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 9,
-        "w": 12,
-        "h": 8
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "targets": [
         {
@@ -231,7 +229,11 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "textMode": "auto"
+        "textMode": "auto",
+        "text": {
+          "titleSize": 12,
+          "valueSize": 24
+        }
       }
     },
     {
@@ -242,7 +244,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 17,
+        "y": 5,
         "w": 24,
         "h": 1
       }
@@ -258,9 +260,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 18,
-        "w": 12,
-        "h": 8
+        "y": 6,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -274,18 +276,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -303,10 +308,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 18,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 6,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -320,18 +325,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -349,10 +357,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 26,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 6,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -380,18 +388,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -409,10 +420,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 26,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 11,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -426,18 +437,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -455,10 +469,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 34,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 11,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -479,18 +493,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -508,10 +525,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 34,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 11,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -532,18 +549,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -562,9 +582,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 42,
-        "w": 12,
-        "h": 8
+        "y": 16,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -578,18 +598,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "hertz",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -607,10 +630,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 42,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 16,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -624,18 +647,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -651,7 +677,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 50,
+        "y": 21,
         "w": 24,
         "h": 1
       }
@@ -667,9 +693,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 51,
-        "w": 12,
-        "h": 8
+        "y": 22,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -683,18 +709,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -712,10 +741,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 51,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 22,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -750,18 +779,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -779,10 +811,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 59,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 22,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -817,18 +849,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -846,10 +881,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 59,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 27,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -884,18 +919,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -913,10 +951,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 67,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 27,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -937,18 +975,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -966,10 +1007,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 67,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 27,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -990,18 +1031,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1020,9 +1064,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 75,
-        "w": 12,
-        "h": 8
+        "y": 32,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1043,18 +1087,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1072,10 +1119,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 75,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 32,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1096,18 +1143,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1125,10 +1175,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 83,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 32,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1149,18 +1199,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1176,7 +1229,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 91,
+        "y": 37,
         "w": 24,
         "h": 1
       }
@@ -1192,9 +1245,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 92,
-        "w": 12,
-        "h": 8
+        "y": 38,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1208,18 +1261,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1237,10 +1293,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 92,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 38,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1254,18 +1310,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1283,10 +1342,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 100,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 38,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1300,18 +1359,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1329,10 +1391,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 100,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 43,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1346,18 +1408,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1373,7 +1438,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 108,
+        "y": 48,
         "w": 24,
         "h": 1
       }
@@ -1389,9 +1454,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 109,
-        "w": 12,
-        "h": 8
+        "y": 49,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1405,18 +1470,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1434,10 +1502,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 109,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 49,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1451,18 +1519,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1480,10 +1551,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 117,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 49,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1497,18 +1568,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "iops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1526,10 +1600,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 117,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 54,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1543,18 +1617,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "iops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1572,10 +1649,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 125,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 54,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1589,18 +1666,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "s",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1618,10 +1698,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 125,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 54,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1635,18 +1715,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "s",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1665,9 +1748,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 133,
-        "w": 12,
-        "h": 8
+        "y": 59,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1681,18 +1764,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1710,10 +1796,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 133,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 59,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1727,18 +1813,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1756,10 +1845,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 141,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 59,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1773,18 +1862,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1802,10 +1894,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 141,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 64,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1826,18 +1918,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1853,7 +1948,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 149,
+        "y": 69,
         "w": 24,
         "h": 1
       }
@@ -1869,9 +1964,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 150,
-        "w": 12,
-        "h": 8
+        "y": 70,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1885,18 +1980,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1914,10 +2012,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 150,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 70,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1931,18 +2029,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "Bps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -1960,10 +2061,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 158,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 70,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -1977,18 +2078,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2006,10 +2110,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 158,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 75,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2023,18 +2127,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2052,10 +2159,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 166,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 75,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2076,18 +2183,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2105,10 +2215,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 166,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 75,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2129,18 +2239,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2159,9 +2272,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 174,
-        "w": 12,
-        "h": 8
+        "y": 80,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2175,18 +2288,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2204,10 +2320,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 174,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 80,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2221,18 +2337,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2248,7 +2367,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 182,
+        "y": 85,
         "w": 24,
         "h": 1
       }
@@ -2264,9 +2383,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 183,
-        "w": 12,
-        "h": 8
+        "y": 86,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2287,18 +2406,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2316,10 +2438,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 183,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 86,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2333,18 +2455,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2362,10 +2487,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 191,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 86,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2386,18 +2511,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2415,10 +2543,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 191,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 91,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2439,18 +2567,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2468,10 +2599,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 199,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 91,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2499,18 +2630,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "ops",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2528,10 +2662,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 199,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 91,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2559,18 +2693,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2586,7 +2723,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 207,
+        "y": 96,
         "w": 24,
         "h": 1
       }
@@ -2602,9 +2739,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 208,
-        "w": 12,
-        "h": 8
+        "y": 97,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2618,18 +2755,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "cores",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2647,10 +2787,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 208,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 97,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2664,18 +2804,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2693,10 +2836,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 216,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 97,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2710,18 +2853,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2739,10 +2885,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 216,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 102,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2756,18 +2902,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2785,10 +2934,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 224,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 102,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2809,18 +2958,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "cores",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2838,10 +2990,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 224,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 102,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2862,18 +3014,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2889,7 +3044,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 232,
+        "y": 107,
         "w": 24,
         "h": 1
       }
@@ -2905,9 +3060,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 233,
-        "w": 12,
-        "h": 8
+        "y": 108,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2921,18 +3076,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "celsius",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2950,10 +3108,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 233,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 108,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -2967,18 +3125,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "celsius",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -2994,7 +3155,7 @@
       "panels": [],
       "gridPos": {
         "x": 0,
-        "y": 241,
+        "y": 113,
         "w": 24,
         "h": 1
       }
@@ -3010,9 +3171,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 242,
-        "w": 12,
-        "h": 8
+        "y": 114,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -3026,18 +3187,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3055,10 +3219,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 242,
-        "w": 12,
-        "h": 8
+        "x": 8,
+        "y": 114,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -3072,18 +3236,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "s",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3101,10 +3268,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 0,
-        "y": 250,
-        "w": 12,
-        "h": 8
+        "x": 16,
+        "y": 114,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -3118,18 +3285,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -3147,10 +3317,10 @@
         "uid": "prometheus"
       },
       "gridPos": {
-        "x": 12,
-        "y": 250,
-        "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 119,
+        "w": 8,
+        "h": 5
       },
       "targets": [
         {
@@ -3171,18 +3341,21 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "N/A"
+          "noValue": "N/A",
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 5,
+            "showPoints": "never"
+          }
         },
         "overrides": []
       },
       "options": {
         "legend": {
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": [],
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
