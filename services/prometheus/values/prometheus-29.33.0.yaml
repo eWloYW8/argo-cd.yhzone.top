@@ -267,12 +267,6 @@ scrapeConfigs:
     - source_labels:
       - __meta_kubernetes_node_name
       target_label: node
-    - target_label: __address__
-      replacement: kubernetes.default.svc:443
-    - source_labels:
-      - __meta_kubernetes_node_name
-      target_label: __metrics_path__
-      replacement: /api/v1/nodes/$1/proxy/metrics
     pre_relabel_configs: ''
     post_relabel_configs: ''
   kubernetes-nodes-cadvisor:
@@ -289,12 +283,6 @@ scrapeConfigs:
     - source_labels:
       - __meta_kubernetes_node_name
       target_label: node
-    - target_label: __address__
-      replacement: kubernetes.default.svc:443
-    - source_labels:
-      - __meta_kubernetes_node_name
-      target_label: __metrics_path__
-      replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
     pre_relabel_configs: ''
     post_relabel_configs: ''
   kubernetes-service-endpoints:
