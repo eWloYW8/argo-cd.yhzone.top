@@ -396,6 +396,30 @@
       "type": "link",
       "url": "/d/workloads/kubernetes-workloads",
       "keepTime": true
+    },
+    {
+      "title": "Node / ali-sas",
+      "type": "link",
+      "url": "/d/node-ali-sas",
+      "keepTime": true
+    },
+    {
+      "title": "Node / n100",
+      "type": "link",
+      "url": "/d/node-n100",
+      "keepTime": true
+    },
+    {
+      "title": "Node / opiai20t-512",
+      "type": "link",
+      "url": "/d/node-opiai20t-512",
+      "keepTime": true
+    },
+    {
+      "title": "Node / yihao-pve-debian",
+      "type": "link",
+      "url": "/d/node-yihao-pve-debian",
+      "keepTime": true
     }
   ]
 }
