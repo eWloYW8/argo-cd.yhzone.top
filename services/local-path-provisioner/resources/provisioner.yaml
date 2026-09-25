@@ -139,6 +139,12 @@ data:
           "paths": [
             "/home/yihao/k8s/storage/pvc"
           ]
+        },
+        {
+          "node": "opiai20t-512",
+          "paths": [
+            "/home/yihao/k8s/storage/pvc"
+          ]
         }
       ]
     }

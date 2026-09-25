@@ -1,0 +1,7 @@
+apiVersion: networking.yhzone.top/v1alpha1
+kind: NodePublicIPv6
+metadata:
+  name: opiai20t-512
+spec:
+  address: 2001:da8:e000:731a:c274:2bff:fefc:842c
+  enabled: true
