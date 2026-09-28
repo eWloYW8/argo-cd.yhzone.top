@@ -56,17 +56,6 @@ class Reconciliation(unittest.TestCase):
         domains,routes=c.calculate(self.ing,self.svc,self.slices,self.nodes,addresses,{'ali-sas','worker'},self.certs)
         self.assertEqual([r['recordType'] for r in domains[host]],['A','AAAA'])
         self.assertIn(host,routes)
-    def test_esa_host_routes_without_managing_its_dns(self):
-        host = 'newapi.esa.yhzone.top'
-        self.ing[0]['spec']['rules'][0]['host'] = host
-        self.ing[0]['metadata']['annotations'] = {c.GROUP + '/publish-dns': 'false'}
-        domains, routes = c.calculate(self.ing, self.svc, self.slices, self.nodes,
-            {}, {'ali-sas', 'worker'}, self.certs)
-        self.assertEqual(domains, {})
-        self.assertEqual(routes, [host])
-        self.assertIn(host, c.haproxy_config(routes))
-        self.assertIsNone(c.HOST_RE.fullmatch('other.esa.yhzone.top'))
-
     def test_removed_alias_rejected_before_legacy(self):
         text=c.haproxy_config(['keys.yhzone.top'])
         self.assertLess(text.index('content reject if { req.ssl_sni -i keys.poc.pub }'),text.index('default_backend legacy'))

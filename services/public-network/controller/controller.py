@@ -19,7 +19,7 @@ NS = os.getenv('NAMESPACE', 'public-network')
 IPV4 = os.getenv('PUBLIC_IPV4', '101.37.69.162')
 IPV4_NODE = os.getenv('IPV4_NODE', 'ali-sas')
 LEGACY_ADDRESS = str(ipaddress.IPv4Address(os.getenv('LEGACY_ADDRESS', '10.1.2.4')))
-HOST_RE = re.compile(r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.d)?|newapi\.esa)\.yhzone\.top$')
+HOST_RE = re.compile(r'^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.d)?\.yhzone\.top$')
 
 
 def ready(obj):
