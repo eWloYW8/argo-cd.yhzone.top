@@ -41,3 +41,7 @@ legacyIngress:
   host: newapi.d.yhzone.top
   expose: true
   publishDNS: true
+esaIngress:
+  host: newapi.esa.yhzone.top
+  expose: true
+  publishDNS: false
