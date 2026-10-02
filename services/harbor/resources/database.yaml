@@ -15,6 +15,8 @@ spec:
     metadata:
       labels: *id001
     spec:
+      nodeSelector:
+        node.yhzone.top/role: core
       securityContext:
         runAsUser: 999
         fsGroup: 999

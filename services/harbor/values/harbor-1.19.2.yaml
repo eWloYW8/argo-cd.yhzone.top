@@ -232,7 +232,8 @@ nginx:
     minAvailable: 1
   revisionHistoryLimit: 10
   extraEnvVars: []
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: []
@@ -263,7 +264,8 @@ portal:
     minAvailable: 1
   revisionHistoryLimit: 10
   extraEnvVars: []
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: []
@@ -363,7 +365,8 @@ jobservice:
     failureThreshold: 3
     successThreshold: 1
   extraEnvVars: []
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: null
@@ -427,7 +430,8 @@ registry:
     enabled: false
     minAvailable: 1
   revisionHistoryLimit: 10
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: []
@@ -489,7 +493,8 @@ trivy:
     failureThreshold: 3
     successThreshold: 1
   extraEnvVars: []
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: []
@@ -535,7 +540,8 @@ database:
       failureThreshold: 3
       successThreshold: 1
     extraEnvVars: []
-    nodeSelector: {}
+    nodeSelector:
+      node.yhzone.top/role: core
     tolerations: []
     affinity: {}
     priorityClassName: null
@@ -578,7 +584,8 @@ redis:
       failureThreshold: 3
       successThreshold: 1
     extraEnvVars: []
-    nodeSelector: {}
+    nodeSelector:
+      node.yhzone.top/role: core
     tolerations: []
     affinity: {}
     priorityClassName: null
@@ -626,7 +633,8 @@ exporter:
   extraEnvVars: []
   podAnnotations: {}
   podLabels: {}
-  nodeSelector: {}
+  nodeSelector:
+    node.yhzone.top/role: core
   tolerations: []
   affinity: {}
   topologySpreadConstraints: []
