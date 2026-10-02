@@ -4,8 +4,6 @@ namespace: argocd
 resources:
 - resources/namespace.yaml
 - resources
-components:
-- ../../components/image-prefix
 patches:
 - target:
     group: apps
@@ -15,3 +13,15 @@ patches:
     - op: add
       path: /spec/template/spec/nodeSelector/node.yhzone.top~1role
       value: core
+    - op: add
+      path: /spec/template/spec/containers/0/imagePullPolicy
+      value: IfNotPresent
+- target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: argocd-dex-server|argocd-repo-server|argocd-redis
+  patch: |-
+    - op: add
+      path: /spec/template/spec/initContainers/0/imagePullPolicy
+      value: IfNotPresent
