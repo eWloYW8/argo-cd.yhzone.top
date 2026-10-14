@@ -8,7 +8,6 @@ resources:
 - opiai20t-512-ipv6.yaml
 - rbac.yaml
 - controller.yaml
-- musepipro-512-ipv6.yaml
 - opi5-ipv6.yaml
 configMapGenerator:
 - name: public-edge-run
