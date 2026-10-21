@@ -14,3 +14,16 @@ data:
           loadBalancer:
             servers:
             - address: {{ .Values.backend | quote }}
+{{- with .Values.tcpForward }}
+    tcp:
+      routers:
+        forward:
+          entryPoints: [forward]
+          rule: "HostSNI(`*`)"
+          service: forward
+      services:
+        forward:
+          loadBalancer:
+            servers:
+            - address: {{ .backend | quote }}
+{{- end }}

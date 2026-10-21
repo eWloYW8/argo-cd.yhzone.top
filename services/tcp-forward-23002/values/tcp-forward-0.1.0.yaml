@@ -5,10 +5,6 @@ hops:
   nodeName: yihao-pve-debian
   listenAddress: 10.1.2.4:23002
   backend: 172.25.2.38:23002
-- name: ali-sas
-  nodeName: ali-sas
-  listenAddress: 0.0.0.0:23002
-  backend: 10.1.2.4:23002
 resources:
   requests:
     cpu: 10m

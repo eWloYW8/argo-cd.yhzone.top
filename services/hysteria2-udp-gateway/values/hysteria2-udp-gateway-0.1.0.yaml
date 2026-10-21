@@ -10,3 +10,6 @@ resources:
     memory: 32Mi
   limits:
     memory: 128Mi
+tcpForward:
+  listenPort: 23002
+  backend: 10.1.2.4:23002

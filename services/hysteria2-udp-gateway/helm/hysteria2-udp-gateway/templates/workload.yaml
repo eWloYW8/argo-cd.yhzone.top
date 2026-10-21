@@ -36,6 +36,9 @@ spec:
         - --entrypoints.hysteria.address=0.0.0.0:{{ .Values.listenPort }}/udp
         - --entrypoints.hysteria.udp.timeout={{ .Values.sessionTimeout }}
         - --entrypoints.health.address=127.0.0.1:18082/tcp
+        {{- with .Values.tcpForward }}
+        - --entrypoints.forward.address=0.0.0.0:{{ .listenPort }}/tcp
+        {{- end }}
         - --ping=true
         - --ping.entrypoint=health
         - --providers.file.filename=/config/udp.yaml
@@ -50,6 +53,12 @@ spec:
           containerPort: {{ .Values.listenPort }}
           hostPort: {{ .Values.listenPort }}
           protocol: UDP
+        {{- with .Values.tcpForward }}
+        - name: tcp-forward
+          containerPort: {{ .listenPort }}
+          hostPort: {{ .listenPort }}
+          protocol: TCP
+        {{- end }}
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
