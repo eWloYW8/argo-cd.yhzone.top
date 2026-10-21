@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: public-network
+helmGlobals:
+  chartHome: helm
+helmCharts:
+- name: tcp-forward
+  version: 0.1.0
+  releaseName: tcp-forward-23002
+  namespace: public-network
+  valuesFile: values/tcp-forward-0.1.0.yaml
