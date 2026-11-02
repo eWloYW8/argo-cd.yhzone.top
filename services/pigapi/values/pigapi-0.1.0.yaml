@@ -1,0 +1,6 @@
+image: ghcr.io/ewloyw8/pigapi:latest
+postgresImage: harbor.k8s.yhzone.top/docker.io/library/postgres:16-alpine
+clickhouseImage: harbor.k8s.yhzone.top/docker.io/clickhouse/clickhouse-server:24.8.14.39-alpine
+host: pigapi.yhzone.top
+postgresStorage: 10Gi
+clickhouseStorage: 20Gi

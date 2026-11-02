@@ -1,0 +1,354 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pigapi
+  annotations:
+    argocd.argoproj.io/sync-wave: '-10'
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pigapi-config
+data:
+  config.json: "{\n  \"listen\": \"0.0.0.0:8080\",\n  \"admin_listen\": \"0.0.0.0:8081\"\
+    ,\n  \"llm_public_url\": \"https://{{ .Values.host }}:20443\",\n  \"state_database_url\"\
+    : \"postgres://pigapi@postgres:5432/pigapi?sslmode=disable\",\n  \"state_database_password_file\"\
+    : \"/run/secrets/postgres_password\",\n  \"max_request_bytes\": 134217728,\n \
+    \ \"clickhouse\": {\n    \"url\": \"http://clickhouse:8123\",\n    \"database\"\
+    : \"pigapi\",\n    \"username\": \"pigapi\",\n    \"password_file\": \"/run/secrets/clickhouse_password\"\
+    \n  },\n  \"services\": [],\n  \"organizations\": [],\n  \"analysis\": {\n   \
+    \ \"public_url\": \"https://{{ .Values.host }}:20443\",\n    \"session_secret_file\"\
+    : \"/run/secrets/session_secret\",\n    \"bootstrap_token_file\": \"/run/secrets/bootstrap_token\"\
+    \n  }\n}"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: yihao-local
+  resources:
+    requests:
+      storage: {{ .Values.postgresStorage | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+    spec:
+      nodeSelector:
+        node.yhzone.top/role: core
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: postgres
+        image: {{ .Values.postgresImage | quote }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_USER
+          value: pigapi
+        - name: POSTGRES_DB
+          value: pigapi
+        - name: POSTGRES_PASSWORD_FILE
+          value: /run/secrets/postgres_password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - name: db
+          containerPort: 5432
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 1Gi
+        readinessProbe:
+          exec: &id001
+            command:
+            - pg_isready
+            - -U
+            - pigapi
+            - -d
+            - pigapi
+          periodSeconds: 5
+        startupProbe:
+          exec: *id001
+          periodSeconds: 5
+          failureThreshold: 60
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: secrets
+          mountPath: /run/secrets
+          readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: postgres-data
+      - name: secrets
+        secret:
+          secretName: pigapi-secrets
+          items:
+          - key: postgres_password
+            path: postgres_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app.kubernetes.io/name: postgres
+  ports:
+  - name: db
+    port: 5432
+    targetPort: db
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clickhouse-data
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: yihao-local
+  resources:
+    requests:
+      storage: {{ .Values.clickhouseStorage | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clickhouse
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clickhouse
+    spec:
+      nodeSelector:
+        node.yhzone.top/role: core
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: clickhouse
+        image: {{ .Values.clickhouseImage | quote }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: CLICKHOUSE_USER
+          value: pigapi
+        - name: CLICKHOUSE_DB
+          value: pigapi
+        - name: CLICKHOUSE_PASSWORD_FILE
+          value: /run/secrets/clickhouse_password
+        - name: CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT
+          value: '1'
+        ports:
+        - name: db
+          containerPort: 8123
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 2Gi
+        readinessProbe:
+          httpGet: &id001
+            path: /ping
+            port: 8123
+          periodSeconds: 5
+        startupProbe:
+          httpGet: *id001
+          periodSeconds: 5
+          failureThreshold: 60
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/clickhouse
+        - name: secrets
+          mountPath: /run/secrets
+          readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: clickhouse-data
+      - name: secrets
+        secret:
+          secretName: pigapi-secrets
+          items:
+          - key: clickhouse_password
+            path: clickhouse_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse
+spec:
+  selector:
+    app.kubernetes.io/name: clickhouse
+  ports:
+  - name: db
+    port: 8123
+    targetPort: db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pigapi
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pigapi
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pigapi
+      annotations:
+        checksum/config: {{ .Values | toJson | sha256sum }}
+    spec:
+      nodeSelector:
+        node.yhzone.top/role: core
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: pigapi
+        image: {{ .Values.image | quote }}
+        imagePullPolicy: Always
+        ports:
+        - name: api
+          containerPort: 8080
+        - name: admin
+          containerPort: 8081
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 1Gi
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: api
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: api
+          periodSeconds: 15
+        startupProbe:
+          httpGet:
+            path: /health/live
+            port: api
+          periodSeconds: 5
+          failureThreshold: 60
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: true
+        - name: secrets
+          mountPath: /run/secrets
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: config
+        configMap:
+          name: pigapi-config
+      - name: secrets
+        secret:
+          secretName: pigapi-secrets
+      - name: tmp
+        emptyDir:
+          sizeLimit: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pigapi-public
+  annotations:
+    traefik.ingress.kubernetes.io/service.nativelb: 'true'
+spec:
+  trafficDistribution: PreferSameNode
+  selector:
+    app.kubernetes.io/name: pigapi
+  ports:
+  - name: api
+    port: 8080
+    targetPort: api
+  - name: admin
+    port: 8081
+    targetPort: admin
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pigapi-public
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    networking.yhzone.top/publish-dns: 'true'
+  labels:
+    networking.yhzone.top/exposure: public
+spec:
+  ingressClassName: traefik-public
+  tls:
+  - hosts:
+    - {{ .Values.host | quote }}
+    secretName: pigapi-public-tls
+  rules:
+  - host: {{ .Values.host | quote }}
+    http:
+      paths:
+      - path: /analysis
+        pathType: Prefix
+        backend:
+          service:
+            name: pigapi-public
+            port:
+              number: 8081
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pigapi-public
+            port:
+              number: 8080
