@@ -7,22 +7,6 @@ metadata:
     argocd.argoproj.io/sync-options: Prune=false,Delete=false
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pigapi-config
-data:
-  config.json: "{\n  \"listen\": \"0.0.0.0:8080\",\n  \"admin_listen\": \"0.0.0.0:8081\"\
-    ,\n  \"llm_public_url\": \"https://{{ .Values.host }}:20443\",\n  \"state_database_url\"\
-    : \"postgres://pigapi@postgres:5432/pigapi?sslmode=disable\",\n  \"state_database_password_file\"\
-    : \"/run/secrets/postgres_password\",\n  \"max_request_bytes\": 134217728,\n \
-    \ \"clickhouse\": {\n    \"url\": \"http://clickhouse:8123\",\n    \"database\"\
-    : \"pigapi\",\n    \"username\": \"pigapi\",\n    \"password_file\": \"/run/secrets/clickhouse_password\"\
-    \n  },\n  \"services\": [],\n  \"organizations\": [],\n  \"analysis\": {\n   \
-    \ \"public_url\": \"https://{{ .Values.host }}:20443\",\n    \"session_secret_file\"\
-    : \"/run/secrets/session_secret\",\n    \"bootstrap_token_file\": \"/run/secrets/bootstrap_token\"\
-    \n  }\n}"
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-data
@@ -230,7 +214,7 @@ spec:
       labels:
         app.kubernetes.io/name: pigapi
       annotations:
-        checksum/config: {{ .Values | toJson | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
       nodeSelector:
         node.yhzone.top/role: core
