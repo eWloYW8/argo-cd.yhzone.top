@@ -4,3 +4,4 @@ clickhouseImage: harbor.k8s.yhzone.top/docker.io/clickhouse/clickhouse-server:24
 host: pigapi.yhzone.top
 postgresStorage: 10Gi
 clickhouseStorage: 20Gi
+runtimeConfigRevision: dingtalk-1

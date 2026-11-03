@@ -214,7 +214,7 @@ spec:
       labels:
         app.kubernetes.io/name: pigapi
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        config-revision: {{ .Values.runtimeConfigRevision | quote }}
     spec:
       nodeSelector:
         node.yhzone.top/role: core
@@ -275,8 +275,11 @@ spec:
           mountPath: /tmp
       volumes:
       - name: config
-        configMap:
-          name: pigapi-config
+        secret:
+          secretName: pigapi-secrets
+          items:
+          - key: config.json
+            path: config.json
       - name: secrets
         secret:
           secretName: pigapi-secrets
