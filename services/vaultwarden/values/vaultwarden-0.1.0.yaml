@@ -1,4 +1,4 @@
-image: vaultwarden/app@sha256:81fe8510622a214285a306259187d3686b127c6319b3e752324ec4b893a6902a
+image: docker.io/vaultwarden/server:1.37.5@sha256:4fe17f415f90087377d37c755e0ea3cf189dcc6794e49cdd2a9adbb4937d9e1f
 replicas: 1
 publishDNS: true
 runtimeEnv: true
