@@ -1,4 +1,4 @@
-image: ghcr.io/ewloyw8/pigapi:latest@sha256:7b22430f3881aa96c6298db8481e7280b167da0eb9c70a297585fd225847e178
+image: ghcr.io/ewloyw8/pigapi:latest@sha256:2ed69e17334f2a94187a48b5fd78910751afdf91e7ef6e124792090a12e9b78c
 postgresImage: harbor.k8s.yhzone.top/docker.io/library/postgres:16-alpine
 clickhouseImage: harbor.k8s.yhzone.top/docker.io/clickhouse/clickhouse-server:24.8.14.39-alpine
 host: pigapi.yhzone.top
