@@ -1,7 +1,7 @@
-image: ghcr.io/ewloyw8/pigapi:latest@sha256:2ed69e17334f2a94187a48b5fd78910751afdf91e7ef6e124792090a12e9b78c
+image: harbor.k8s.yhzone.top/pigapi/app:local-115d7e4-20261106@sha256:ccbc61b7dbbd1cefc9021b951eb6af4d5adb3d3ed2407df400f8c0ebd83e8b29
 postgresImage: harbor.k8s.yhzone.top/docker.io/library/postgres:16-alpine
 clickhouseImage: harbor.k8s.yhzone.top/docker.io/clickhouse/clickhouse-server:24.8.14.39-alpine
 host: pigapi.yhzone.top
 postgresStorage: 10Gi
 clickhouseStorage: 20Gi
-runtimeConfigRevision: dingtalk-1
+runtimeConfigRevision: local-115d7e4

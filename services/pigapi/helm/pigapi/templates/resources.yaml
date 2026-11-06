@@ -227,6 +227,8 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       terminationGracePeriodSeconds: 120
+      imagePullSecrets:
+      - name: harbor-pull
       containers:
       - name: pigapi
         image: {{ .Values.image | quote }}
@@ -234,8 +236,6 @@ spec:
         ports:
         - name: api
           containerPort: 8080
-        - name: admin
-          containerPort: 8081
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -301,9 +301,6 @@ spec:
   - name: api
     port: 8080
     targetPort: api
-  - name: admin
-    port: 8081
-    targetPort: admin
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -331,8 +328,22 @@ spec:
           service:
             name: pigapi-public
             port:
-              number: 8081
+              number: 8080
       - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: pigapi-public
+            port:
+              number: 8080
+      - path: /codex
+        pathType: Prefix
+        backend:
+          service:
+            name: pigapi-public
+            port:
+              number: 8080
+      - path: /health
         pathType: Prefix
         backend:
           service:
